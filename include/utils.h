@@ -18,7 +18,7 @@
 #include <sys/stat.h>
 #include <lv2/sysfs.h>
 
-// for msgdialogs
+// For message dialog
 #include <sysutil/sysutil.h>
 #include <sysutil/msg.h>
 
@@ -33,31 +33,30 @@
 #define DT_DIR 1
 
 typedef struct {
-    u32 flags;
-    int splitted;
-    char path_name[MAXPATHLEN];
-    char title[64];
-    char title_id[64];
-
+	u32 flags;
+	int splitted;
+	char path_name[MAXPATHLEN];
+	char title[64];
+	char title_id[64];
 } t_directories;
 
 typedef struct {
-    int index;
-    u32 flags;
-    char title[64];
-    char title_id[64];
+	int index;
+	u32 flags;
+	char title[64];
+	char title_id[64];
 } entry_favourites;
 
 #define MAX_FAVORITES 48
 
 typedef struct {
-    u32 version;
-    entry_favourites list[12];
+	u32 version;
+	entry_favourites list[12];
 } tfavourites;
 
 typedef struct {
-    u32 version;
-    entry_favourites list[MAX_FAVORITES];
+	u32 version;
+	entry_favourites list[MAX_FAVORITES];
 } tfavourites2;
 
 #define MAX_DIRECTORIES 3000
@@ -72,15 +71,13 @@ typedef struct {
 #define FS_S_IFMT 0170000
 #define FS_S_IFDIR 0040000
 
-#define S_ISDIR(m)	(((m)&_IFMT) == _IFDIR)
+#define S_ISDIR(m) (((m)&_IFMT) == _IFDIR)
 
-//#define PSDEBUG 1
-
-#define SC_SYS_POWER 					(379)
-#define SYS_SOFT_REBOOT 				0x200
-#define SYS_HARD_REBOOT					0x1200
-#define SYS_REBOOT						0x8201
-#define SYS_SHUTDOWN					0x1100
+#define SC_SYS_POWER 	(379)
+#define SYS_SOFT_REBOOT	0x200
+#define SYS_HARD_REBOOT	0x1200
+#define SYS_REBOOT		0x8201
+#define SYS_SHUTDOWN	0x1100
 
 #define BEEP1 { lv2syscall3(392, 0x1004, 0x4,   0x6); }
 #define BEEP2 { lv2syscall3(392, 0x1004, 0x7,  0x36); }
@@ -122,7 +119,6 @@ int DrawDialogYesNoDefaultYes(char * str);
 int DrawDialogYesNoTimer(char * str, float milliseconds);
 int DrawDialogYesNoTimer2(char * str, float milliseconds);
 
-
 int parse_param_sfo(char * file, char *title_name);
 int parse_ps3_disc(char *path, char * id);
 int parse_param_sfo_id(char * file, char *title_id);
@@ -140,7 +136,6 @@ int delete_custom_icons(t_directories *list, int *max);
 
 int delete_entries(t_directories *list, int *max, u32 flag);
 int fill_entries_from_device(char *path, t_directories *list, int *max, u32 flag, int sel, bool append);
-//int fill_iso_entries_from_device(char *path, u32 flag, t_directories *list, int *max);
 int fill_iso_entries_from_device(char *path, u32 flag, t_directories *list, int *max, unsigned long ioType);
 void fill_directory_entries_with_alt_path(char *file, int n, char *retro_path, char *alt_path, t_directories *list, int *max, u32 flag);
 void fill_psx_iso_entries_from_device(char *path, u32 flag, t_directories *list, int *max);
@@ -198,8 +193,7 @@ char * get_filename(char *path);
 int strcmpext(char *path, char *ext);
 char *str_replace(char *orig, char *rep, char *with);
 
-// console
-
+// Console
 extern int con_x;
 extern int con_y;
 

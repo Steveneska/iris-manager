@@ -23,8 +23,8 @@
 
 extern struct _PS3TimeZone {
 
-    int ftime;
-    char *name;
+	int ftime;
+	char *name;
 
 } PS3TimeZone[128];
 

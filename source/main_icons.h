@@ -91,8 +91,8 @@ void Load_PNG_resources()
     Png_res[IMG_BLURAY_DISC].png_in   = (void *) bluray_png_bin;
     Png_res[IMG_BLURAY_DISC].png_size = bluray_png_bin_size;
 
-    Png_res[IMG_USB_ICON].png_in   = (void *) usb_png_bin;
-    Png_res[IMG_USB_ICON].png_size = usb_png_bin_size;
+    Png_res[IMG_USB_ICON].png_in   = (void *) usb_png1_bin;
+    Png_res[IMG_USB_ICON].png_size = usb_png1_bin_size;
 
     Png_res[IMG_MISSING_ICON].png_in   = (void *) missing_png_bin;
     Png_res[IMG_MISSING_ICON].png_size = missing_png_bin_size;
@@ -106,8 +106,8 @@ void Load_PNG_resources()
     Png_res[IMG_PS1_DISC].png_in   = (void *) psone_png_bin;
     Png_res[IMG_PS1_DISC].png_size = psone_png_bin_size;
 
-    Png_res[IMG_PS1_ISO].png_in   = (void *) psoneiso_png_bin;
-    Png_res[IMG_PS1_ISO].png_size = psoneiso_png_bin_size;
+    Png_res[IMG_PS1_ISO].png_in   = (void *) psone_png_bin;
+    Png_res[IMG_PS1_ISO].png_size = psone_png_bin_size;
 
     // file manager icons
 
@@ -131,8 +131,8 @@ void Load_PNG_resources()
 
     // end file manager icons
 
-    Png_res[IMG_PS2_ISO].png_in   = (void *) pstwoiso_png_bin;
-    Png_res[IMG_PS2_ISO].png_size = pstwoiso_png_bin_size;
+    Png_res[IMG_PS2_ISO].png_in   = (void *) pstwo_png_bin;
+    Png_res[IMG_PS2_ISO].png_size = pstwo_png_bin_size;
 
     Png_res[IMG_USB_ICON2].png_in   = (void *) usb_png2_bin;
     Png_res[IMG_USB_ICON2].png_size = usb_png2_bin_size;
@@ -154,8 +154,8 @@ void Load_PNG_resources()
     }
 
     // UMD
-    Png_res[IMG_PSP_ISO].png_in   = (void *) pspiso_png_bin;
-    Png_res[IMG_PSP_ISO].png_size = pspiso_png_bin_size;
+    Png_res[IMG_PSP_ISO].png_in   = (void *) psp_png_bin;
+    Png_res[IMG_PSP_ISO].png_size = psp_png_bin_size;
     LoadPNG(&Png_res[IMG_PSP_ISO], NULL);
 
     // retro
@@ -164,9 +164,9 @@ void Load_PNG_resources()
     LoadPNG(&Png_res[IMG_RETRO_ICON], NULL);
 
     // film PNG
-    Png_res[IMG_MOVIE_ICON].png_in   = (void *) film_png_bin;
-    Png_res[IMG_MOVIE_ICON].png_size = film_png_bin_size;
-    LoadPNG(&Png_res[IMG_MOVIE_ICON], NULL);
+    Png_res[IMG_VIDEO_ICON].png_in   = (void *) video_png_bin;
+    Png_res[IMG_VIDEO_ICON].png_size = video_png_bin_size;
+    LoadPNG(&Png_res[IMG_VIDEO_ICON], NULL);
 
     // net_host overlay
     Png_res[IMG_NETHOST].png_in   = (void *) nethost_png_bin;

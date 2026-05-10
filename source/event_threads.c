@@ -32,7 +32,6 @@ static void Event_thread(void *a)
         if(sysEventQueueReceive(evQ_sd, &event_sd, 0) < 0) break;
         if(event_sd.data_1 == 0x666) break;
 
-
         if(event_sd.data_1 == 0x555)
         {
             event_thread_working = 1;
@@ -86,7 +85,6 @@ void event_threads_finish()
 
     init = 0;
 }
-
 
 int event_thread_send(u64 data0, u64 data1, u64 data2)
 {

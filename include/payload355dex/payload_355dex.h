@@ -1,7 +1,6 @@
 #ifndef _PAYLOAD_355DEX_H
 #define _PAYLOAD_355DEX_H
 
-
 #include <unistd.h>
 
 #define SKY10_PAYLOAD 1
@@ -21,9 +20,4 @@ int map_lv1_355dex(void);
 void unmap_lv1_355dex();
 void patch_lv2_protection_355dex();
 
-//#define CONFIG_USE_SYS8PERMH4 //disabled by default (testing, maybe not added on final release - if not usefull)
-//#define CONFIG_USE_SYS8CONFIG //disabled, not working yet
-
 #endif
-
-/* vim: set ts=4 sw=4 sts=4 tw=120 */

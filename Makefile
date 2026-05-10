@@ -58,7 +58,7 @@ SOURCES		+=  source/payload470  source/payload470dex
 SOURCES		+=  source/payload475  source/payload475dex  source/payload475deh
 SOURCES		+=  source/payload480  source/payload480dex  source/payload480deh  source/payload481dex
 
-DATA		:=  datas
+DATA		:=  data
 SHADERS		:=  shaders
 INCLUDES	:=  include include/ftp
 INCLUDES	+=  include/payload341  include/payload355     include/payload355dex  include/payload355deh

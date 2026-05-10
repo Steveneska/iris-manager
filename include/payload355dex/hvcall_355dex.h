@@ -1,19 +1,19 @@
 #ifndef HVCALL_355DEX_H
 #define HVCALL_355DEX_H
 
-#define HVSC_SYSCALL_355DEX                    811                     // which syscall to overwrite with hvsc redirect
-#define HVSC_SYSCALL_ADDR_355DEX               0x800000000019b8fcULL   // where above syscall is in lv2
-#define NEW_POKE_SYSCALL_355DEX               813                     // which syscall to overwrite with new poke
-#define NEW_POKE_SYSCALL_ADDR_355DEX          0x800000000019be24ULL   // where above syscall is in lv2
+#define HVSC_SYSCALL_355DEX				811						// Which syscall to overwrite with HVSC redirect
+#define HVSC_SYSCALL_ADDR_355DEX		0x800000000019b8fcULL	// Where above syscall is in lv2
+#define NEW_POKE_SYSCALL_355DEX			813						// Which syscall to overwrite with new poke
+#define NEW_POKE_SYSCALL_ADDR_355DEX	0x800000000019be24ULL	// Where above syscall is in lv2
 
-#define HV_BASE_355DEX                      0x8000000014000000ULL   // where in lv2 to map lv1
-#define HV_SIZE_355DEX                        0x800000                // size of lv1 memory to map/dump
+#define HV_BASE_355DEX					0x8000000014000000ULL	// Where in lv2 to map lv1
+#define HV_SIZE_355DEX					0x800000				// Size of lv1 memory to map/dump
 
-#define HPTE_V_BOLTED			0x0000000000000010ULL
-#define HPTE_V_LARGE			0x0000000000000004ULL
-#define HPTE_V_VALID			0x0000000000000001ULL
-#define HPTE_R_PROT_MASK		0x0000000000000003ULL
-#define MM_EA2VA(ea)			((ea) & ~0x8000000000000000ULL)
+#define HPTE_V_BOLTED					0x0000000000000010ULL
+#define HPTE_V_LARGE					0x0000000000000004ULL
+#define HPTE_V_VALID					0x0000000000000001ULL
+#define HPTE_R_PROT_MASK				0x0000000000000003ULL
+#define MM_EA2VA(ea)					((ea) & ~0x8000000000000000ULL)
 
 #define SC_QUOTE_(x) #x
 #define SYSCALL(num) "li %%r11, " SC_QUOTE_(num) "; sc;"
@@ -26,7 +26,7 @@
 	poke813(HVSC_SYSCALL_ADDR_355DEX + 8, 0x3960000044000022ULL | (uint64_t)hvcall << 32);	\
 	poke813(HVSC_SYSCALL_ADDR_355DEX + 16, 0xE80100107C0803A6ULL); \
 	poke813(HVSC_SYSCALL_ADDR_355DEX + 24, 0x4e80002060000000ULL);
-	
+
 #define REMOVE_HVSC_REDIRECT() poke813(HVSC_SYSCALL_ADDR_355DEX, original_syscall_code_1); \
 	poke813(HVSC_SYSCALL_ADDR_355DEX + 8, original_syscall_code_2); \
 	poke813(HVSC_SYSCALL_ADDR_355DEX + 16, original_syscall_code_3); \

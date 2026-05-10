@@ -12,4 +12,3 @@ int event_thread_send(u64 data0, u64 data1, u64 data2);
 void wait_event_thread();
 
 #endif
-

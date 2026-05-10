@@ -1,13 +1,13 @@
 #ifndef HVCALL_H
 #define HVCALL_H
 
-#define HVSC_SYSCALL                    811                     // which syscall to overwrite with hvsc redirect
-#define HVSC_SYSCALL_ADDR               0x8000000000195540ULL   // where above syscall is in lv2
-#define NEW_POKE_SYSCALL                813                     // which syscall to overwrite with new poke
-#define NEW_POKE_SYSCALL_ADDR           0x8000000000195A68ULL   // where above syscall is in lv2
+#define HVSC_SYSCALL			811						// Which syscall to overwrite with HVSC redirect
+#define HVSC_SYSCALL_ADDR		0x8000000000195540ULL	// Where above syscall is in lv2
+#define NEW_POKE_SYSCALL		813						// Which syscall to overwrite with new poke
+#define NEW_POKE_SYSCALL_ADDR	0x8000000000195A68ULL	// Where above syscall is in lv2
 
-#define HV_BASE                         0x8000000014000000ULL   // where in lv2 to map lv1
-#define HV_SIZE                         0x370000                // size of lv1 memory to map/dump
+#define HV_BASE					0x8000000014000000ULL	// Where in lv2 to map lv1
+#define HV_SIZE					0x370000				// Size of lv1 memory to map/dump
 
 #define HPTE_V_BOLTED			0x0000000000000010ULL
 #define HPTE_V_LARGE			0x0000000000000004ULL
@@ -26,7 +26,7 @@
 	pokeq(HVSC_SYSCALL_ADDR + 8, 0x3960000044000022ULL | (uint64_t)hvcall << 32);	\
 	pokeq(HVSC_SYSCALL_ADDR + 16, 0xE80100107C0803A6ULL); \
 	pokeq(HVSC_SYSCALL_ADDR + 24, 0x4e80002060000000ULL);
-	
+
 #define REMOVE_HVSC_REDIRECT() pokeq(HVSC_SYSCALL_ADDR, original_syscall_code_1); \
 	pokeq(HVSC_SYSCALL_ADDR + 8, original_syscall_code_2); \
 	pokeq(HVSC_SYSCALL_ADDR + 16, original_syscall_code_3); \

@@ -80,7 +80,7 @@ enum ResourceImages
     IMG_RETRO_ICON = 18,
     IMG_BLURAY_DISC = 0,
     IMG_DVD_DISC = 15,
-    IMG_MOVIE_ICON = 20,
+    IMG_VIDEO_ICON = 20,
     IMG_USB_ICON = 1,
     IMG_USB_ICON2 = 14,
     IMG_NETHOST = 19,

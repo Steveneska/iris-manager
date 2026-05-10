@@ -38,15 +38,15 @@
 #undef NEW_POKE_SYSCALL_ADDR
 #undef PAYLOAD_OFFSET
 
-#define SYSCALL_BASE                    0x800000000035F300ULL //done
+#define SYSCALL_BASE                    0x800000000035F300ULL // Done
 #define NEW_POKE_SYSCALL                813
-#define NEW_POKE_SYSCALL_ADDR           0x80000000001A6DE0ULL  //done // where above syscall is in lv2
+#define NEW_POKE_SYSCALL_ADDR           0x80000000001A6DE0ULL  // Done // where above syscall is in lv2
 #define PAYLOAD_OFFSET                  0x3d90
 #define PERMS_OFFSET                    0x3560
 
 #define PAYLOAD_UMOUNT_OFFSET           (0x3d90+0x400)
 #define UMOUNT_SYSCALL_OFFSET           (0x1A54F8 +0x8) // SYSCALL (838) // 1B2B4 is bad!
-#define LV2MOUNTADDR_453 0x8000000000471F98ULL //done
+#define LV2MOUNTADDR_453 0x8000000000471F98ULL // Done
 //0xff0 => 0x116c (458098 - 459204)
 #define LV2MOUNTADDR_453_ESIZE 0x118
 #define LV2MOUNTADDR_453_CSIZE 0x108
@@ -279,8 +279,8 @@ void load_payload_453(int mode)
 
     PATCH_JUMP(0x5618C, 0x56098);          // Not present in rebug, anyway..
 
-    _poke(0x26F7F4, 0x386000007C6307B4); //done
-    _poke32(0x26F7F4 + 8, 0x4E800020); //done
+    _poke(0x26F7F4, 0x386000007C6307B4); // Done
+    _poke32(0x26F7F4 + 8, 0x4E800020); // Done
 
     /*
         -002c3cf0  f8 01 00 b0 7c 9c 23 78  7c 7d 1b 78 4b d8 aa 1d  |....|.#x|}.xK...|

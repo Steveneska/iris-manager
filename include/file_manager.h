@@ -7,7 +7,7 @@ int file_manager(char *pathw1, char *pathw2);
 
 extern const DISC_INTERFACE *disc_ntfs[8];
 
-// mounts from /dev_usb000 to 007
+// Mount from /dev_usb000 to /dev_usb007
 extern ntfs_md *mounts[8];
 extern int mountCount[8];
 extern int automountCount[8];
@@ -19,31 +19,31 @@ extern u32 old_ports_cnt;
 
 enum FindModes
 {
-    FIND_HEX_MODE = 0,
-    FIND_TEXT_MODE = 1,
-    FIND_CASE_INSENSITIVE_MODE = 2,
+	FIND_HEX_MODE = 0,
+	FIND_TEXT_MODE = 1,
+	FIND_CASE_INSENSITIVE_MODE = 2,
 };
 
 enum FileIconTypes
 {
-    FILE_TYPE_FOLDER = 0,
-    FILE_TYPE_NORMAL = 1,
-    FILE_TYPE_PKG = 2,
-    FILE_TYPE_SELF = 3,
-    FILE_TYPE_ZIP = 3,
-    FILE_TYPE_PNG = 4,
-    FILE_TYPE_JPG = 44,
-    FILE_TYPE_ISO = 5,
-    FILE_TYPE_LUA = 5,
-    FILE_TYPE_BIN = 55,
+	FILE_TYPE_FOLDER = 0,
+	FILE_TYPE_NORMAL = 1,
+	FILE_TYPE_PKG = 2,
+	FILE_TYPE_SELF = 3,
+	FILE_TYPE_ZIP = 3,
+	FILE_TYPE_PNG = 4,
+	FILE_TYPE_JPG = 44,
+	FILE_TYPE_ISO = 5,
+	FILE_TYPE_LUA = 5,
+	FILE_TYPE_BIN = 55,
 };
 
 enum DirectoryEntryTypes
 {
-    IS_FILE = 0,
-    IS_DIRECTORY = 1,
-    IS_MARKED = 2,
-    IS_NOT_AVAILABLE = 128,
+	IS_FILE = 0,
+	IS_DIRECTORY = 1,
+	IS_MARKED = 2,
+	IS_NOT_AVAILABLE = 128,
 };
 
 u64 get_free_space(char * path, bool usecache);
@@ -71,7 +71,7 @@ void extract_file(char *path1, char *path2, char *filename);
 
 int copy_archive_file(char *path1, char *path2, char *file, u64 free);
 int CopyFile(char* path, char* path2);
-int CopyDirectory(char* path, char* path2, char* path3); // path3 = path2 (used to avoid infinit recursivity)
+int CopyDirectory(char* path, char* path2, char* path3); // path3 = path2 is used to avoid infinite recursivity
 
 void draw_file_manager();
 void draw_hex_editor();

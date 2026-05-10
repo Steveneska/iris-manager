@@ -5,9 +5,6 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
-//#include "saves.h"
-//#include "common.h"
-
 #define SUCCESS 0
 #define FAILED -1
 
@@ -64,8 +61,8 @@ static void walk_zip_directory(const char* startdir, const char* inputdir, struc
 	int len = strlen(startdir) + 1;
 	DIR *dp = opendir(inputdir);
 
-	if (!dp) {
-		//LOG("Failed to open input directory: '%s'", inputdir);
+	if (!dp)
+	{
 		return;
 	}
 
@@ -78,19 +75,20 @@ static void walk_zip_directory(const char* startdir, const char* inputdir, struc
 			snprintf(fullname, sizeof(fullname), "%s%s", inputdir, dirp->d_name);
 
 			if (dir_exists(fullname) == SUCCESS) {
-				if (zip_add_dir(zipper, &fullname[len]) < 0) {
-					//LOG("Failed to add directory to zip: %s", fullname);
+				if (zip_add_dir(zipper, &fullname[len]) < 0)
+				{
+					//
 				}
 				walk_zip_directory(startdir, fullname, zipper);
 			} else {
 				struct zip_source *source = zip_source_file(zipper, fullname, 0, 0);
-				if (!source) {
-					//LOG("Failed to source file to zip: %s", fullname);
+				if (!source)
+				{
 					continue;
 				}
-				if (zip_add(zipper, &fullname[len], source) < 0) {
+				if (zip_add(zipper, &fullname[len], source) < 0)
+				{
 					zip_source_free(source);
-					//LOG("Failed to add file to zip: %s", fullname);
 				}
 			}
 		}
@@ -103,9 +101,8 @@ int zip_directory(const char* basedir, const char* inputdir, const char* output_
 	int ret;
 	struct zip* archive = zip_open(output_filename, ZIP_CREATE | ZIP_EXCL, &ret);
 
-	//LOG("Zipping <%s> to %s...", inputdir, output_filename);
-	if (!archive) {
-		//LOG("Failed to open output file '%s'", output_filename);
+	if (!archive)
+	{
 		return 0;
 	}
 
@@ -121,17 +118,16 @@ int extract_zip(const char* zip_file, const char* dest_path)
 	struct zip* archive = zip_open(zip_file, ZIP_CHECKCONS, NULL);
 	int files = zip_get_num_files(archive);
 
-	if (files <= 0) {
-		//LOG("Empty ZIP file.");
+	if (files <= 0)
+	{
 		return 0;
 	}
 
 	uint64_t progress = 0;
 	init_progress_bar("Extracting files...", " ");
 
-	//LOG("Installing ZIP to <%s>...", dest_path);
-
-	for (int i = 0; i < files; i++) {
+	for (int i = 0; i < files; i++)
+	{
 		progress++;
 		const char* filename = zip_get_name(archive, i, 0);
 
@@ -150,13 +146,13 @@ int extract_zip(const char* zip_file, const char* dest_path)
 			continue;
 
 		struct zip_stat st;
-		if (zip_stat_index(archive, i, 0, &st)) {
-			//LOG("Unable to access file %s in zip.", filename);
+		if (zip_stat_index(archive, i, 0, &st))
+		{
 			continue;
 		}
 		struct zip_file* zfd = zip_fopen_index(archive, i, 0);
-		if (!zfd) {
-			//LOG("Unable to open file %s in zip.", filename);
+		if (!zfd)
+		{
 			continue;
 		}
 
@@ -165,7 +161,6 @@ int extract_zip(const char* zip_file, const char* dest_path)
 			zip_fclose(zfd);
 			zip_close(archive);
 			end_progress_bar();
-			//LOG("Error opening temporary file '%s'.", path);
 			return 0;
 		}
 
@@ -175,13 +170,13 @@ int extract_zip(const char* zip_file, const char* dest_path)
 		{
 			while (pos < st.size) {
 				count = min64(0x10000, st.size - pos);
-				if (zip_fread(zfd, buffer, count) != count) {
+				if (zip_fread(zfd, buffer, count) != count)
+				{
 					free(buffer);
 					fclose(tfd);
 					zip_fclose(zfd);
 					zip_close(archive);
 					end_progress_bar();
-					//LOG("Error reading from zip.");
 					return 0;
 				}
 
@@ -193,10 +188,10 @@ int extract_zip(const char* zip_file, const char* dest_path)
 
 		zip_fclose(zfd);
 		fclose(tfd);
-
 	}
 
-	if (archive) {
+	if (archive)
+	{
 		zip_close(archive);
 	}
 

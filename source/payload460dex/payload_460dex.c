@@ -42,7 +42,7 @@
 #undef NEW_POKE_SYSCALL_ADDR
 #undef PAYLOAD_OFFSET
 
-#define SYSCALL_BASE                    0x800000000038A120ULL //done
+#define SYSCALL_BASE                    0x800000000038A120ULL // Done
 #define NEW_POKE_SYSCALL                813
 #define NEW_POKE_SYSCALL_ADDR           0x80000000001AD3ECULL // syscall_rmdir (813)
 
@@ -51,7 +51,7 @@
 
 #define PAYLOAD_UMOUNT_OFFSET           (0x3d90+0x400)
 #define UMOUNT_SYSCALL_OFFSET           (0x1ABB04 + 0x8) // SYSCALL (838)
-#define LV2MOUNTADDR_460dex 0x80000000004A36D0ULL //done
+#define LV2MOUNTADDR_460dex 0x80000000004A36D0ULL // Done
 //0xff0 => 0x116c (458098 - 459204)
 #define LV2MOUNTADDR_460dex_ESIZE 0x118
 #define LV2MOUNTADDR_460dex_CSIZE 0x108

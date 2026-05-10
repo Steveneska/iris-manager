@@ -120,8 +120,8 @@ u32 snd_inited = 0;
 
 #if defined(LOADER_MODE) || defined(LASTPLAY_LOADER)
 #else
-//
-#include "credits.h"
+/*
+#include "credits.h"*/
 
 #include "background_jpg_bin.h"
 #include "bluray_png_bin.h"
@@ -129,7 +129,7 @@ u32 snd_inited = 0;
 #include "direct_png_bin.h"
 #include "dvd_png_bin.h"
 #include "file_png_bin.h"
-#include "film_png_bin.h"
+#include "video_png_bin.h"
 #include "folder_png_bin.h"
 #include "ftp_png_bin.h"
 #include "img_png_bin.h"
@@ -137,13 +137,13 @@ u32 snd_inited = 0;
 #include "missing_png_bin.h"
 #include "nethost_png_bin.h"
 #include "psone_png_bin.h"
-#include "psoneiso_png_bin.h"
-#include "pstwoiso_png_bin.h"
-#include "pspiso_png_bin.h"
+#include "psone_png_bin.h"
+#include "pstwo_png_bin.h"
+#include "psp_png_bin.h"
 #include "pkg_png_bin.h"
 #include "retro_png_bin.h"
 #include "self_png_bin.h"
-#include "usb_png_bin.h"
+#include "usb_png1_bin.h"
 #include "usb_png2_bin.h"
 //
 #endif
@@ -4694,8 +4694,8 @@ void draw_grid(float x, float y)
                      if(directories[get_currentdir(i)].flags & D_FLAG_HOMEB_DVD)
                      {
                          if((directories[get_currentdir(i)].flags & D_FLAG_HOMEB_MKV) == D_FLAG_HOMEB_MKV)
-                         tiny3d_SetTextureWrap(0, Png_res_offset[IMG_MOVIE_ICON], Png_res[IMG_MOVIE_ICON].width,
-                                               Png_res[IMG_MOVIE_ICON].height, Png_res[IMG_MOVIE_ICON].wpitch,
+                         tiny3d_SetTextureWrap(0, Png_res_offset[IMG_VIDEO_ICON], Png_res[IMG_VIDEO_ICON].width,
+                                               Png_res[IMG_VIDEO_ICON].height, Png_res[IMG_VIDEO_ICON].wpitch,
                                                TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                          else
                          tiny3d_SetTextureWrap(0, Png_res_offset[IMG_DVD_DISC], Png_res[IMG_DVD_DISC].width,
@@ -5045,8 +5045,8 @@ void draw_grid(float x, float y)
              if(directories[get_currentdir(i)].flags & D_FLAG_HOMEB_DVD)
              {
                 if((directories[get_currentdir(i)].flags & D_FLAG_HOMEB_MKV) == D_FLAG_HOMEB_MKV)
-                    tiny3d_SetTextureWrap(0, Png_res_offset[IMG_MOVIE_ICON], Png_res[IMG_MOVIE_ICON].width,
-                                          Png_res[IMG_MOVIE_ICON].height, Png_res[IMG_MOVIE_ICON].wpitch,
+                    tiny3d_SetTextureWrap(0, Png_res_offset[IMG_VIDEO_ICON], Png_res[IMG_VIDEO_ICON].width,
+                                          Png_res[IMG_VIDEO_ICON].height, Png_res[IMG_VIDEO_ICON].wpitch,
                                           TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                 else
                     tiny3d_SetTextureWrap(0, Png_res_offset[IMG_DVD_DISC], Png_res[IMG_DVD_DISC].width,
@@ -5438,8 +5438,8 @@ void draw_coverflow(float x, float y)
                         if(directories[get_currentdir(i)].flags & D_FLAG_HOMEB_DVD)
                         {
                              if((directories[get_currentdir(i)].flags & D_FLAG_HOMEB_MKV) == D_FLAG_HOMEB_MKV)
-                             tiny3d_SetTextureWrap(0, Png_res_offset[IMG_MOVIE_ICON], Png_res[IMG_MOVIE_ICON].width,
-                                                   Png_res[IMG_MOVIE_ICON].height, Png_res[IMG_MOVIE_ICON].wpitch,
+                             tiny3d_SetTextureWrap(0, Png_res_offset[IMG_VIDEO_ICON], Png_res[IMG_VIDEO_ICON].width,
+                                                   Png_res[IMG_VIDEO_ICON].height, Png_res[IMG_VIDEO_ICON].wpitch,
                                                    TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                              else
                              tiny3d_SetTextureWrap(0, Png_res_offset[IMG_DVD_DISC], Png_res[IMG_DVD_DISC].width,
@@ -5803,8 +5803,8 @@ void draw_coverflow(float x, float y)
              if(directories[get_currentdir(i)].flags & D_FLAG_HOMEB_DVD)
              {
                    if((directories[get_currentdir(i)].flags & D_FLAG_HOMEB_MKV) == D_FLAG_HOMEB_MKV)
-                   tiny3d_SetTextureWrap(0, Png_res_offset[IMG_MOVIE_ICON], Png_res[IMG_MOVIE_ICON].width,
-                                     Png_res[IMG_MOVIE_ICON].height, Png_res[IMG_MOVIE_ICON].wpitch,
+                   tiny3d_SetTextureWrap(0, Png_res_offset[IMG_VIDEO_ICON], Png_res[IMG_VIDEO_ICON].width,
+                                     Png_res[IMG_VIDEO_ICON].height, Png_res[IMG_VIDEO_ICON].wpitch,
                                      TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                    else
                    tiny3d_SetTextureWrap(0, Png_res_offset[IMG_DVD_DISC], Png_res[IMG_DVD_DISC].width,
@@ -9427,7 +9427,7 @@ exit_gbloptions:
                     if(file_exists(tmp_path) == false) sprintf(tmp_path, webman_path);
 
                     if(get_net_status() != SUCCESS) break;
-					
+
 					if(file_exists(tmp_path) == false)
 					{
 						DrawDialogOKTimer("webMAN is not currently installed. The latest version won't be downloaded.", 3500.0f);
@@ -9446,7 +9446,7 @@ exit_gbloptions:
                     }
                     else
                         DrawDialogOKTimer("webMAN could not be downloaded!", 2000.0f);
-					
+
 					break;
 /*
                     // Create boot_plugins.txt if it doesn't exist
@@ -9615,12 +9615,12 @@ exit_gbloptions:
                 if(n == -555) DrawDialogOKTimer("Aborted by the user\n\nAbortado por el usuario", 2000.0f);
                 break;
 
-            case 8: // Credits
+            /*case 8: // Credits
                 DrawDialogOK(credits_str1);
                 DrawDialogOK(credits_str2);
                 DrawDialogOK(credits_str3);
                 DrawDialogOK(credits_str4);
-                break;
+                break;*/
 
             default:
                break;

@@ -37,7 +37,7 @@
 #undef NEW_POKE_SYSCALL_ADDR
 #undef PAYLOAD_OFFSET
 
-#define SYSCALL_BASE                    0x800000000035E860ULL //done
+#define SYSCALL_BASE                    0x800000000035E860ULL // Done
 #define NEW_POKE_SYSCALL                813
 #define NEW_POKE_SYSCALL_ADDR           0x80000000001B5B9CULL // peek(SYSCALL_BASE + NEW_POKE_SYSCALL*8) -> peek(0x35E860 + 813*8)
 
@@ -47,7 +47,7 @@
 #define PAYLOAD_UMOUNT_OFFSET           (0x3d90+0x400)
 #define UMOUNT_SYSCALL_OFFSET           (0x1B42B4+0x8) // SYSCALL (838) + 8 -> peek(SYSCALL_BASE + 838*8) -> peek(0x35E860 + 0x1A30)
 
-#define LV2MOUNTADDR_446 0x8000000000458098ULL //done
+#define LV2MOUNTADDR_446 0x8000000000458098ULL // Done
 //0xff0 => 0x116c (458098 - 459204)
 #define LV2MOUNTADDR_446_ESIZE 0x118
 #define LV2MOUNTADDR_446_CSIZE 0x108
@@ -277,8 +277,8 @@ void load_payload_446(int mode)
     PATCH_JUMP(0x5618C, 0x56098);          // Not present in rebug, anyway..
 
     /** Rancid-o: Fix 0x8001003C error (incorrect version in sys_load_param) - It is present in the new game updates **/
-    _poke(0x297314, 0x386000007C6307B4); //done
-    _poke32(0x297314 + 8, 0x4E800020); //done
+    _poke(0x297314, 0x386000007C6307B4); // Done
+    _poke32(0x297314 + 8, 0x4E800020); // Done
 
     /*
         -002c3cf0  f8 01 00 b0 7c 9c 23 78  7c 7d 1b 78 4b d8 aa 1d  |....|.#x|}.xK...|

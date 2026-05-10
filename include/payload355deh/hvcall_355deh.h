@@ -1,19 +1,19 @@
 #ifndef HVCALL_355DEH_H
 #define HVCALL_355DEH_H
 
-#define HVSC_SYSCALL_355DEH                   811                     // which syscall to overwrite with hvsc redirect
-#define HVSC_SYSCALL_ADDR_355DEH              0x800000000019C628ULL   // where above syscall is in lv2
-#define NEW_POKE_SYSCALL_355DEH               813                     // which syscall to overwrite with new poke
-#define NEW_POKE_SYSCALL_ADDR_355DEH          0x800000000019CB50ULL   // where above syscall is in lv2
+#define HVSC_SYSCALL_355DEH				811						// Which syscall to overwrite with HVSC redirect
+#define HVSC_SYSCALL_ADDR_355DEH		0x800000000019C628ULL	// Where above syscall is in lv2
+#define NEW_POKE_SYSCALL_355DEH			813						// Which syscall to overwrite with new poke
+#define NEW_POKE_SYSCALL_ADDR_355DEH	0x800000000019CB50ULL	// Where above syscall is in lv2
 
-#define HV_BASE_355DEH                        0x8000000014000000ULL   // where in lv2 to map lv1
-#define HV_SIZE_355DEH                        0x800000                // size of lv1 memory to map/dump
+#define HV_BASE_355DEH					0x8000000014000000ULL	// Where in lv2 to map lv1
+#define HV_SIZE_355DEH					0x800000				// Size of lv1 memory to map/dump
 
-#define HPTE_V_BOLTED			0x0000000000000010ULL
-#define HPTE_V_LARGE			0x0000000000000004ULL
-#define HPTE_V_VALID			0x0000000000000001ULL
-#define HPTE_R_PROT_MASK		0x0000000000000003ULL
-#define MM_EA2VA(ea)			((ea) & ~0x8000000000000000ULL)
+#define HPTE_V_BOLTED					0x0000000000000010ULL
+#define HPTE_V_LARGE					0x0000000000000004ULL
+#define HPTE_V_VALID					0x0000000000000001ULL
+#define HPTE_R_PROT_MASK				0x0000000000000003ULL
+#define MM_EA2VA(ea)					((ea) & ~0x8000000000000000ULL)
 
 #define SC_QUOTE_(x) #x
 #define SYSCALL(num) "li %%r11, " SC_QUOTE_(num) "; sc;"

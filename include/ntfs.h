@@ -1,6 +1,5 @@
-/**
- * ntfs.h - Simple functionality for startup, mounting and unmounting of NTFS-based devices.
- *
+/*
+ * ntfs.h - Simple functionality for startup, mounting and dismounting NTFS-based devices.
  * Copyright (c) 2013 Estwald
  * Copyright (c) 2010 Dimok
  * Copyright (c) 2009 Rhys "Shareese" Koedijk
@@ -33,22 +32,21 @@ extern "C" {
 #include <ppu-lv2.h>
 #include <stdio.h>
 
-#include <fcntl.h> // file flags
+#include <fcntl.h> // File flags
 #include <sys/syslimits.h>
 
 #ifndef ATTRIBUTE_ALIGN
-# define ATTRIBUTE_ALIGN(v)				__attribute__((aligned(v)))
+# define ATTRIBUTE_ALIGN(v)	__attribute__((aligned(v)))
 #endif
 #ifndef ATTRIBUTE_PACKED
-# define ATTRIBUTE_PACKED				__attribute__((packed))
+# define ATTRIBUTE_PACKED	__attribute__((packed))
 #endif
 
-// disc_io.h
-#define FEATURE_MEDIUM_CANREAD      0x00000001
-#define FEATURE_MEDIUM_CANWRITE     0x00000002
-#define FEATURE_PS3_SD              0x00000100
-#define FEATURE_PS3_USB             0x00000200
-#define FEATURE_PS3_BDVD            0x00000400
+#define FEATURE_MEDIUM_CANREAD	0x00000001
+#define FEATURE_MEDIUM_CANWRITE	0x00000002
+#define FEATURE_PS3_SD			0x00000100
+#define FEATURE_PS3_USB			0x00000200
+#define FEATURE_PS3_BDVD		0x00000400
 
 typedef uint32_t sec_t;
 
@@ -72,39 +70,38 @@ struct DISC_INTERFACE_STRUCT {
 
 typedef struct DISC_INTERFACE_STRUCT DISC_INTERFACE;
 
+// NTFS errno values
+#define ENOPART		3000 // No partition was found
+#define EINVALPART	3001 // Specified partition is invalid or not supported
+#define EDIRTY		3002 // Volume is dirty and NTFS_RECOVER was not specified during mount
+#define EHIBERNATED	3003 // Volume is hibernated and NTFS_IGNORE_HIBERFILE was not specified during mount
 
-/* NTFS errno values */
-#define ENOPART                         3000 /* No partition was found */
-#define EINVALPART                      3001 /* Specified partition is invalid or not supported */
-#define EDIRTY                          3002 /* Volume is dirty and NTFS_RECOVER was not specified during mount */
-#define EHIBERNATED                     3003 /* Volume is hibernated and NTFS_IGNORE_HIBERFILE was not specified during mount */
+// NTFS cache options
+#define CACHE_DEFAULT_PAGE_COUNT	128 // The default number of pages in the cache
+#define CACHE_DEFAULT_PAGE_SIZE		8   // The default number of sectors per cache page
 
-/* NTFS cache options */
-#define CACHE_DEFAULT_PAGE_COUNT        128  /* The default number of pages in the cache */
-#define CACHE_DEFAULT_PAGE_SIZE         8    /* The default number of sectors per cache page */
+// NTFS mount flags
+#define NTFS_DEFAULT				0x00000000 // Standard mount, expects a clean, non-hibernated volume
+#define NTFS_SHOW_HIDDEN_FILES		0x00000001 // Display hidden files when enumerating directories
+#define NTFS_SHOW_SYSTEM_FILES		0x00000002 // Display system files when enumerating directories
+#define NTFS_UPDATE_ACCESS_TIMES	0x00000004 // Update file and directory access times
+#define NTFS_RECOVER				0x00000008 // Reset $LogFile if dirty (i.e. from unclean disconnect)
+#define NTFS_IGNORE_HIBERFILE		0x00000010 // Mount even if volume is hibernated
+#define NTFS_READ_ONLY				0x00000020 // Mount in read only mode
+#define NTFS_IGNORE_CASE			0x00000040 // Ignore case sensitivity. Everything must be and  will be provided in lowercase.
+#define NTFS_SU NTFS_SHOW_HIDDEN_FILES | NTFS_SHOW_SYSTEM_FILES
+#define NTFS_FORCE NTFS_RECOVER | NTFS_IGNORE_HIBERFILE
 
-/* NTFS mount flags */
-#define NTFS_DEFAULT                    0x00000000 /* Standard mount, expects a clean, non-hibernated volume */
-#define NTFS_SHOW_HIDDEN_FILES          0x00000001 /* Display hidden files when enumerating directories */
-#define NTFS_SHOW_SYSTEM_FILES          0x00000002 /* Display system files when enumerating directories */
-#define NTFS_UPDATE_ACCESS_TIMES        0x00000004 /* Update file and directory access times */
-#define NTFS_RECOVER                    0x00000008 /* Reset $LogFile if dirty (i.e. from unclean disconnect) */
-#define NTFS_IGNORE_HIBERFILE           0x00000010 /* Mount even if volume is hibernated */
-#define NTFS_READ_ONLY                  0x00000020 /* Mount in read only mode */
-#define NTFS_IGNORE_CASE                0x00000040 /* Ignore case sensitivity. Everything must be and  will be provided in lowercase. */
-#define NTFS_SU                         NTFS_SHOW_HIDDEN_FILES | NTFS_SHOW_SYSTEM_FILES
-#define NTFS_FORCE                      NTFS_RECOVER | NTFS_IGNORE_HIBERFILE
-
-/**
+/*
  * ntfs_md - NTFS mount descriptor
  */
 typedef struct _ntfs_md {
-    char name[32];                      /* Mount name (can be accessed as "name:/") */
-    const DISC_INTERFACE *interface;    /* Block device containing the mounted partition */
-    sec_t startSector;                  /* Local block address to first sector of partition */
+	char name[32];						// Mount name (can be accessed as "name:/")
+	const DISC_INTERFACE *interface;	// Block device containing the mounted partition
+	sec_t startSector;					// Local block address to first sector of partition
 } ntfs_md;
 
-/**
+/*
  * Find all NTFS partitions on a block device.
  *
  * @param INTERFACE The block device to search
@@ -115,7 +112,7 @@ typedef struct _ntfs_md {
  */
 extern int ntfsFindPartitions (const DISC_INTERFACE *interface, sec_t **partitions);
 
-/**
+/*
  * Mount all NTFS partitions on all inserted block devices.
  *
  * @param MOUNTS (out) A pointer to receive the array of mount descriptors
@@ -127,7 +124,7 @@ extern int ntfsFindPartitions (const DISC_INTERFACE *interface, sec_t **partitio
  */
 extern int ntfsMountAll (ntfs_md **mounts, u32 flags);
 
-/**
+/*
  * Mount all NTFS partitions on a block devices.
  *
  * @param INTERFACE The block device to mount.
@@ -140,7 +137,7 @@ extern int ntfsMountAll (ntfs_md **mounts, u32 flags);
  */
 extern int ntfsMountDevice (const DISC_INTERFACE* interface, ntfs_md **mounts, u32 flags);
 
-/**
+/*
  * Mount a NTFS partition from a specific sector on a block device.
  *
  * @param NAME The name to mount the device under (can then be accessed as "NAME:/")
@@ -155,24 +152,23 @@ extern int ntfsMountDevice (const DISC_INTERFACE* interface, ntfs_md **mounts, u
  */
 extern bool ntfsMount (const char *name, const DISC_INTERFACE *interface, sec_t startSector, u32 cachePageCount, u32 cachePageSize, u32 flags);
 
-/**
- * Unmount a NTFS partition.
+/*
+ * Dismount a NTFS partition.
  *
  * @param NAME The name of mount used in ntfsMountSimple() and ntfsMount()
- * @param FORCE If true unmount even if the device is busy (may lead to data lose)
+ * @param FORCE If true dismount even if the device is busy (may lead to data lose)
  */
 extern void ntfsUnmount (const char *name, bool force);
 
-/**
+/*
  * Get the volume name of a mounted NTFS partition.
  *
  * @param NAME The name of mount (see @ntfsMountAll, @ntfsMountDevice, and @ntfsMount)
- *
  * @return The volumes name if successful or NULL if an error occurred (see errno)
  */
 extern const char *ntfsGetVolumeName (const char *name);
 
-/**
+/*
  * Set the volume name of a mounted NTFS partition.
  *
  * @param NAME The name of mount (see @ntfsMountAll, @ntfsMountDevice, and @ntfsMount)
@@ -183,8 +179,7 @@ extern const char *ntfsGetVolumeName (const char *name);
  */
 extern bool ntfsSetVolumeName (const char *name, const char *volumeName);
 
-// file operations
-
+// File operations
 int ps3ntfs_open(const char *path, int flags, int mode);
 int ps3ntfs_close(int fd);
 int ps3ntfs_write(int fd, const char *ptr, size_t len);
@@ -203,8 +198,8 @@ int ps3ntfs_file_to_sectors(const char *path, uint32_t *sec_out, uint32_t *size_
 int ps3ntfs_get_fd_from_FILE(FILE *fp);
 
 typedef struct {
-    int device;
-    void *dirStruct;
+	int device;
+	void *dirStruct;
 } DIR_ITER;
 
 DIR_ITER*  ps3ntfs_diropen(const char *path);
@@ -212,10 +207,9 @@ int ps3ntfs_dirreset(DIR_ITER *dirState);
 int ps3ntfs_dirnext(DIR_ITER *dirState, char *filename, struct stat *filestat);
 int ps3ntfs_dirclose(DIR_ITER *dirState);
 
-// map file functions to libc open, fopen, ...
+// Map file functions to libC open, FOpen, ...
 void NTFS_init_system_io(void);
 void NTFS_deinit_system_io(void);
-
 
 #ifndef _SYS_STATVFS_H
 #define _SYS_STATVFS_H
@@ -238,7 +232,7 @@ struct statvfs {
 	unsigned long f_fsid;
 	unsigned long f_flag;
 	unsigned long f_namemax;
-}; 
+};
 
 #endif
 
@@ -247,8 +241,8 @@ int ps3ntfs_ftruncate(int fd, off_t len);
 int ps3ntfs_fsync(int fd);
 int ps3ntfs_errno(void);
 
-bool PS3_NTFS_IsInserted(int fd); // fd from  0 to 7 (usb000... usb007)
-bool PS3_NTFS_Shutdown(int fd);   // fd from  0 to 7 (usb000... usb007)
+bool PS3_NTFS_IsInserted(int fd); // FD from usb000 to usb007
+bool PS3_NTFS_Shutdown(int fd);   // FD from usb000 to usb007
 
 extern const DISC_INTERFACE __io_ntfs_usb000;
 extern const DISC_INTERFACE __io_ntfs_usb001;
@@ -259,9 +253,8 @@ extern const DISC_INTERFACE __io_ntfs_usb005;
 extern const DISC_INTERFACE __io_ntfs_usb006;
 extern const DISC_INTERFACE __io_ntfs_usb007;
 
-
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _LIBNTFS_H */
+#endif

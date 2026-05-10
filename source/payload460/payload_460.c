@@ -38,9 +38,9 @@
 #undef NEW_POKE_SYSCALL_ADDR
 #undef PAYLOAD_OFFSET
 
-#define SYSCALL_BASE                    0x8000000000363A18ULL //done
+#define SYSCALL_BASE                    0x8000000000363A18ULL // Done
 #define NEW_POKE_SYSCALL                813
-#define NEW_POKE_SYSCALL_ADDR           0x80000000001A6F3CULL  //done // where above syscall is in lv2
+#define NEW_POKE_SYSCALL_ADDR           0x80000000001A6F3CULL  // Done // where above syscall is in lv2
 
 #define PAYLOAD_OFFSET                  0x3d90
 #define PERMS_OFFSET                    0x3560
@@ -48,7 +48,7 @@
 #define PAYLOAD_UMOUNT_OFFSET           (0x3d90+0x400)
 #define UMOUNT_SYSCALL_OFFSET           (0x1A5654 + 0x8) // SYSCALL (838) fixed by zar //former offet by Habib (0x1B480 +0x8) // SYSCALL (838)
 
-#define LV2MOUNTADDR_460 0x8000000000479FA0ULL //done
+#define LV2MOUNTADDR_460 0x8000000000479FA0ULL // Done
 //0xff0 => 0x116c (458098 - 459204)
 #define LV2MOUNTADDR_460_ESIZE 0x118
 #define LV2MOUNTADDR_460_CSIZE 0x108
