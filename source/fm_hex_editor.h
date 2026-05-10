@@ -6,7 +6,6 @@ static u64 begin_lv2 = 0x0;
 static u64 size_lv1 = 0x10000000ULL;
 static u64 size_lv2 = 0x800000ULL;
 
-
 int read_LV1(u64 pos, char *mem, int size)
 {
     int n = 0;

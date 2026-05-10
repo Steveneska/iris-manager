@@ -98,25 +98,43 @@ main.o: c:/Users/Steven/Source/iris-manager/source/main.c \
  c:/Users/Steven/Source/iris-manager/include/font_b.h \
  c:/Users/Steven/Source/iris-manager/build/background_jpg_bin.h \
  c:/Users/Steven/Source/iris-manager/build/bluray_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/circle_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/cricket_raw_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/cross_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/direct_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/down_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/dvd_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/favorite_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/file_png_bin.h \
- c:/Users/Steven/Source/iris-manager/build/video_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/folder_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/ftp_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/img_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/iso_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/l1_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/l2_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/l3_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/left_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/missing_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/music_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/nethost_png_bin.h \
- c:/Users/Steven/Source/iris-manager/build/psone_png_bin.h \
- c:/Users/Steven/Source/iris-manager/build/pstwo_png_bin.h \
- c:/Users/Steven/Source/iris-manager/build/psp_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/pkg_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/psone_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/psp_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/pstwo_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/r1_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/r2_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/r3_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/retro_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/right_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/select_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/self_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/square_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/start_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/triangle_png_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/up_png_bin.h \
  c:/Users/Steven/Source/iris-manager/build/usb_png1_bin.h \
  c:/Users/Steven/Source/iris-manager/build/usb_png2_bin.h \
+ c:/Users/Steven/Source/iris-manager/build/video_png_bin.h \
  c:/Users/Steven/Source/iris-manager/include/ps3_discless.h \
  c:/Users/Steven/Source/iris-manager/include/event_threads.h \
  c:/Users/Steven/Source/iris-manager/include/utils.h \
@@ -325,15 +343,21 @@ c:/Users/Steven/Source/iris-manager/build/background_jpg_bin.h:
 
 c:/Users/Steven/Source/iris-manager/build/bluray_png_bin.h:
 
+c:/Users/Steven/Source/iris-manager/build/circle_png_bin.h:
+
 c:/Users/Steven/Source/iris-manager/build/cricket_raw_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/cross_png_bin.h:
 
 c:/Users/Steven/Source/iris-manager/build/direct_png_bin.h:
 
+c:/Users/Steven/Source/iris-manager/build/down_png_bin.h:
+
 c:/Users/Steven/Source/iris-manager/build/dvd_png_bin.h:
 
-c:/Users/Steven/Source/iris-manager/build/file_png_bin.h:
+c:/Users/Steven/Source/iris-manager/build/favorite_png_bin.h:
 
-c:/Users/Steven/Source/iris-manager/build/video_png_bin.h:
+c:/Users/Steven/Source/iris-manager/build/file_png_bin.h:
 
 c:/Users/Steven/Source/iris-manager/build/folder_png_bin.h:
 
@@ -343,25 +367,55 @@ c:/Users/Steven/Source/iris-manager/build/img_png_bin.h:
 
 c:/Users/Steven/Source/iris-manager/build/iso_png_bin.h:
 
+c:/Users/Steven/Source/iris-manager/build/l1_png_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/l2_png_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/l3_png_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/left_png_bin.h:
+
 c:/Users/Steven/Source/iris-manager/build/missing_png_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/music_png_bin.h:
 
 c:/Users/Steven/Source/iris-manager/build/nethost_png_bin.h:
 
-c:/Users/Steven/Source/iris-manager/build/psone_png_bin.h:
+c:/Users/Steven/Source/iris-manager/build/pkg_png_bin.h:
 
-c:/Users/Steven/Source/iris-manager/build/pstwo_png_bin.h:
+c:/Users/Steven/Source/iris-manager/build/psone_png_bin.h:
 
 c:/Users/Steven/Source/iris-manager/build/psp_png_bin.h:
 
-c:/Users/Steven/Source/iris-manager/build/pkg_png_bin.h:
+c:/Users/Steven/Source/iris-manager/build/pstwo_png_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/r1_png_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/r2_png_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/r3_png_bin.h:
 
 c:/Users/Steven/Source/iris-manager/build/retro_png_bin.h:
 
+c:/Users/Steven/Source/iris-manager/build/right_png_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/select_png_bin.h:
+
 c:/Users/Steven/Source/iris-manager/build/self_png_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/square_png_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/start_png_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/triangle_png_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/up_png_bin.h:
 
 c:/Users/Steven/Source/iris-manager/build/usb_png1_bin.h:
 
 c:/Users/Steven/Source/iris-manager/build/usb_png2_bin.h:
+
+c:/Users/Steven/Source/iris-manager/build/video_png_bin.h:
 
 c:/Users/Steven/Source/iris-manager/include/ps3_discless.h:
 

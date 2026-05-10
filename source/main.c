@@ -125,26 +125,43 @@ u32 snd_inited = 0;
 
 #include "background_jpg_bin.h"
 #include "bluray_png_bin.h"
+#include "circle_png_bin.h"
 #include "cricket_raw_bin.h"
+#include "cross_png_bin.h"
 #include "direct_png_bin.h"
+#include "down_png_bin.h"
 #include "dvd_png_bin.h"
+#include "favorite_png_bin.h"
 #include "file_png_bin.h"
-#include "video_png_bin.h"
 #include "folder_png_bin.h"
 #include "ftp_png_bin.h"
 #include "img_png_bin.h"
 #include "iso_png_bin.h"
+#include "l1_png_bin.h"
+#include "l2_png_bin.h"
+#include "l3_png_bin.h"
+#include "left_png_bin.h"
 #include "missing_png_bin.h"
+#include "music_png_bin.h"
 #include "nethost_png_bin.h"
-#include "psone_png_bin.h"
-#include "psone_png_bin.h"
-#include "pstwo_png_bin.h"
-#include "psp_png_bin.h"
 #include "pkg_png_bin.h"
-#include "retro_png_bin.h"
+#include "psone_png_bin.h"
+#include "psp_png_bin.h"
+#include "pstwo_png_bin.h"
+#include "r1_png_bin.h"
+#include "r2_png_bin.h"
+#include "r3_png_bin.h"
+#include "right_png_bin.h"
+#include "select_png_bin.h"
 #include "self_png_bin.h"
+#include "square_png_bin.h"
+#include "start_png_bin.h"
+#include "triangle_png_bin.h"
+#include "up_png_bin.h"
 #include "usb_png1_bin.h"
 #include "usb_png2_bin.h"
+#include "video_png_bin.h"
+
 //
 #endif
 
@@ -4726,34 +4743,30 @@ void draw_grid(float x, float y)
                         bool is_ps2_classic = !is_retro && strlen(ps2classic_path) > 0 &&
                                               (strstr(directories[get_currentdir(i)].path_name, ps2classic_path) != NULL);
 
-                        if(is_retro)
-                            tiny3d_SetTextureWrap(0, Png_res_offset[IMG_RETRO_ICON], Png_res[IMG_RETRO_ICON].width,
-                                                  Png_res[IMG_RETRO_ICON].height, Png_res[IMG_RETRO_ICON].wpitch,
-                                                  TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
-                        else if(is_ps2_classic)
+                        if(is_ps2_classic)
                         {
                             Png_iscover[i] = 0;
-                            tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS2_ISO], Png_res[IMG_PS2_ISO].width,
-                                                  Png_res[IMG_PS2_ISO].height, Png_res[IMG_PS2_ISO].wpitch,
+                            tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS2_DISC], Png_res[IMG_PS2_DISC].width,
+                                                  Png_res[IMG_PS2_DISC].height, Png_res[IMG_PS2_DISC].wpitch,
                                                   TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                         }
                         else
-                            tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PSP_ISO], Png_res[IMG_PSP_ISO].width,
-                                                  Png_res[IMG_PSP_ISO].height, Png_res[IMG_PSP_ISO].wpitch,
+                            tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PSP_DISC], Png_res[IMG_PSP_DISC].width,
+                                                  Png_res[IMG_PSP_DISC].height, Png_res[IMG_PSP_DISC].wpitch,
                                                   TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                     }
                     else if((directories[get_currentdir(i)].flags & (PS2_FLAG)) == (PS2_FLAG))
                     {
                         Png_iscover[i] = 0;
-                        tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS2_ISO], Png_res[IMG_PS2_ISO].width,
-                                              Png_res[IMG_PS2_ISO].height, Png_res[IMG_PS2_ISO].wpitch,
+                        tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS2_DISC], Png_res[IMG_PS2_DISC].width,
+                                              Png_res[IMG_PS2_DISC].height, Png_res[IMG_PS2_DISC].wpitch,
                                               TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                     }
                     else
                     {
                         Png_iscover[i] = 0;
-                        tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS1_ISO], Png_res[IMG_PS1_ISO].width,
-                                              Png_res[IMG_PS1_ISO].height, Png_res[IMG_PS1_ISO].wpitch,
+                        tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS1_DISC], Png_res[IMG_PS1_DISC].width,
+                                              Png_res[IMG_PS1_DISC].height, Png_res[IMG_PS1_DISC].wpitch,
                                               TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                     }
                 }
@@ -5464,26 +5477,22 @@ void draw_coverflow(float x, float y)
                             bool is_ps2_classic = !is_retro && strlen(ps2classic_path) > 0 &&
                                                   (strstr(directories[get_currentdir(i)].path_name, ps2classic_path) != NULL);
 
-                            if(is_retro)
-                                tiny3d_SetTextureWrap(0, Png_res_offset[IMG_RETRO_ICON], Png_res[IMG_RETRO_ICON].width,
-                                                      Png_res[IMG_RETRO_ICON].height, Png_res[IMG_RETRO_ICON].wpitch,
-                                                      TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
-                            else if(is_ps2_classic)
-                                tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS2_ISO], Png_res[IMG_PS2_ISO].width,
-                                                      Png_res[IMG_PS2_ISO].height, Png_res[IMG_PS2_ISO].wpitch,
+                            if(is_ps2_classic)
+                                tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS2_DISC], Png_res[IMG_PS2_DISC].width,
+                                                      Png_res[IMG_PS2_DISC].height, Png_res[IMG_PS2_DISC].wpitch,
                                                       TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                             else
-                                tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PSP_ISO], Png_res[IMG_PSP_ISO].width,
-                                                      Png_res[IMG_PSP_ISO].height, Png_res[IMG_PSP_ISO].wpitch,
+                                tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PSP_DISC], Png_res[IMG_PSP_DISC].width,
+                                                      Png_res[IMG_PSP_DISC].height, Png_res[IMG_PSP_DISC].wpitch,
                                                       TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                         }
                         else if((directories[get_currentdir(i)].flags & (PS2_FLAG)) == (PS2_FLAG))
-                            tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS2_ISO], Png_res[IMG_PS2_ISO].width,
-                                                  Png_res[IMG_PS2_ISO].height, Png_res[IMG_PS2_ISO].wpitch,
+                            tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS2_DISC], Png_res[IMG_PS2_DISC].width,
+                                                  Png_res[IMG_PS2_DISC].height, Png_res[IMG_PS2_DISC].wpitch,
                                                   TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                         else
-                            tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS1_ISO], Png_res[IMG_PS1_ISO].width,
-                                                  Png_res[IMG_PS1_ISO].height, Png_res[IMG_PS1_ISO].wpitch,
+                            tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS1_DISC], Png_res[IMG_PS1_DISC].width,
+                                                  Png_res[IMG_PS1_DISC].height, Png_res[IMG_PS1_DISC].wpitch,
                                                   TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                     }
                     else if(Png_iscover[i] < 1 && (directories[get_currentdir(i)].flags  & ((PS3_FLAG) | (BDVD_FLAG))) == (PS3_FLAG))
@@ -5543,7 +5552,7 @@ void draw_coverflow(float x, float y)
                             else if((directories[get_currentdir(i)].flags & GAMELIST_FILTER) == BDVD_FLAG)
                                 ii = IMG_BLURAY_DISC;
                             else
-                                ii = IMG_USB_ICON + (IMG_USB_ICON2 - IMG_USB_ICON) * ((directories[get_currentdir(i)].flags & NTFS_FLAG) != 0);
+                                ii = IMG_USB_ICON1 + (IMG_USB_ICON2 - IMG_USB_ICON1) * ((directories[get_currentdir(i)].flags & NTFS_FLAG) != 0);
 
                             if(ii == IMG_NETHOST || (directories[get_currentdir(i)].flags  & GAMELIST_FILTER) > 1)
                             {
@@ -5837,26 +5846,22 @@ void draw_coverflow(float x, float y)
                     bool is_ps2_classic = !is_retro && strlen(ps2classic_path) > 0 &&
                                           (strstr(directories[get_currentdir(i)].path_name, ps2classic_path) != NULL);
 
-                    if(is_retro)
-                        tiny3d_SetTextureWrap(0, Png_res_offset[IMG_RETRO_ICON], Png_res[IMG_RETRO_ICON].width,
-                                              Png_res[IMG_RETRO_ICON].height, Png_res[IMG_RETRO_ICON].wpitch,
-                                              TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
-                    else if(is_ps2_classic)
-                        tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS2_ISO], Png_res[IMG_PS2_ISO].width,
-                                              Png_res[IMG_PS2_ISO].height, Png_res[IMG_PS2_ISO].wpitch,
+                    if(is_ps2_classic)
+                        tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS2_DISC], Png_res[IMG_PS2_DISC].width,
+                                              Png_res[IMG_PS2_DISC].height, Png_res[IMG_PS2_DISC].wpitch,
                                               TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                     else
-                        tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PSP_ISO], Png_res[IMG_PSP_ISO].width,
-                                              Png_res[IMG_PSP_ISO].height, Png_res[IMG_PSP_ISO].wpitch,
+                        tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PSP_DISC], Png_res[IMG_PSP_DISC].width,
+                                              Png_res[IMG_PSP_DISC].height, Png_res[IMG_PSP_DISC].wpitch,
                                               TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                 }
                 else if((directories[get_currentdir(i)].flags & (PS2_FLAG)) == (PS2_FLAG))
-                    tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS2_ISO], Png_res[IMG_PS2_ISO].width,
-                                          Png_res[IMG_PS2_ISO].height, Png_res[IMG_PS2_ISO].wpitch,
+                    tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS2_DISC], Png_res[IMG_PS2_DISC].width,
+                                          Png_res[IMG_PS2_DISC].height, Png_res[IMG_PS2_DISC].wpitch,
                                           TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                 else if((directories[get_currentdir(i)].flags & (PS1_FLAG)) == (PS1_FLAG))
-                    tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS1_ISO], Png_res[IMG_PS1_ISO].width,
-                                          Png_res[IMG_PS1_ISO].height, Png_res[IMG_PS1_ISO].wpitch,
+                    tiny3d_SetTextureWrap(0, Png_res_offset[IMG_PS1_DISC], Png_res[IMG_PS1_DISC].width,
+                                          Png_res[IMG_PS1_DISC].height, Png_res[IMG_PS1_DISC].wpitch,
                                           TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
                 else
                     tiny3d_SetTextureWrap(0, Png_res_offset[IMG_BLURAY_DISC], Png_res[IMG_BLURAY_DISC].width,
