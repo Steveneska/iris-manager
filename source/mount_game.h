@@ -146,7 +146,7 @@ void launch_retro(char *rom_path)
 
 	if(file_exists(dst_path))
 	{
-		// Copy PRBOOM.wad to ROM path
+		// Copy PRBOOM.WAD to ROM path
 		if(strlen(retro_doom_path) > 0 && strstr(rom_path, retro_doom_path))
 		{
 			char wad_path[MAXPATHLEN];
@@ -216,7 +216,7 @@ void launch_retro(char *rom_path)
 		// Create new retroarch.cfg
 		FILE *fp;
 
-		// write ROM path
+		// Write ROM path
 		fp = fopen(dst_path, "w");
 		fputs (libretro_rom_path, fp);
 		fclose(fp);
@@ -231,7 +231,7 @@ void launch_retro(char *rom_path)
 			return;
 		}
 
-		// append template
+		// Append template
 		fp = fopen(dst_path, "a");
 		fputs (template_cfg, fp);
 		fclose(fp);
@@ -242,7 +242,7 @@ void launch_retro(char *rom_path)
 		fun_exit();
 		SaveGameList();
 
-		// call emulator
+		// Call emulator
 		sysProcessExitSpawn2(emu_path, NULL, NULL, NULL, 0, 3071, SYS_PROCESS_SPAWN_STACK_SIZE_1M);
 		exit(0);
 	}
@@ -407,7 +407,7 @@ int launch_iso_game(char *path, int mtype)
 	{
 		launch_video(path);
 
-		//ntfs
+		// NTFS
 		if(is_audiovideo(path) || !strcmpext(path, ".iso") || !strcmpext(path, ".iso.0"))
 			type = EMU_BD;
 		else
@@ -452,12 +452,11 @@ int launch_iso_game(char *path, int mtype)
 
 			reset_sys8_path_table();
 
-			//syscall36("/dev_bdvd");
 			add_sys8_bdvd(NULL, NULL);
 
 			if(lv2peek(0x80000000000004E8ULL) && !use_cobra) syscall_40(1, 0); // disables PS3 Disc-less
 
-			// load PSX options
+			// Load PSX options
 			sprintf(TEMP_PATH1, "%s", path);
 			LoadPSXOptions(TEMP_PATH1);
 
@@ -886,7 +885,7 @@ int launch_iso_game_mamba(char *path, int mtype)
 		{
 			if(is_ps2_game)
 			{
-				unlink_secure("/dev_hdd0/classic_ps2"); unlink_secure("/dev_hdd0/tmp/loadoptical"); //Cobra 8.x
+				unlink_secure("/dev_hdd0/classic_ps2"); unlink_secure("/dev_hdd0/tmp/loadoptical"); // Cobra 8.X
 
 				if(plugin_args) free(plugin_args); plugin_args = NULL;
 

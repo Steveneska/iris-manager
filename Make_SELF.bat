@@ -1,5 +1,7 @@
 @echo off
-title Compiling
+title Compiling SELF
+taskkill /IM cmd.exe /T /FI "WINDOWTITLE eq Administrator:*">NUL
+cls
 
 set PS3SDK=/c/Tools/PSDK3V2
 set WIN_PS3SDK=C:/Tools/PSDK3V2

@@ -30,6 +30,10 @@
 # Debug files
 *.dSYM/
 
+# Residual folders
+.vs
+build
+
 # =========================
 # Operating System Files
 # =========================
@@ -80,6 +84,3 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-# Visual Studio editor files
-.vs
