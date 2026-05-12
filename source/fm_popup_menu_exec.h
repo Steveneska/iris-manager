@@ -232,7 +232,8 @@
 					break;
 				}
 				continue;
-			}   // Exit File Manager
+			}
+			// Exit File Manager
 			else if(set_menu2 == 7)
 			{
 				// exFAT File Manager
@@ -245,7 +246,7 @@
 		}
 		else if(set_menu2 == 1)
 		{
-			// new folder
+			// New folder
 			sprintf(buffer1, "%s", "New");
 
 			if(Get_OSK_String("New Folder", buffer1, 256) == SUCCESS)
@@ -341,7 +342,7 @@
 		} // Rename
 		else if(set_menu2 == 3)
 		{
-			if(copy_mode == 3) // Zip
+			if(copy_mode == 3) // ZIP
 			{
 				char *base_path, *dir_name, *dest_path;
 				if(!fm_pane)
@@ -728,7 +729,7 @@
 				}
 			}
 
-		} // Paste to New File
+		} // Paste to new file
 		else if(set_menu2 == 7)
 		{
 			// Build ISO from file
@@ -756,14 +757,7 @@
 			}
 			else
 			{
-				sprintf(TEMP_PATH1, "%s/USRDIR/TEMP/showtime.iso", self_path);
-
-				if(!fm_pane)
-					sprintf(TEMP_PATH2, "%s/%s", path1, entries1[sel1].d_name);
-				else
-					sprintf(TEMP_PATH2, "%s/%s", path2, entries2[sel2].d_name);
-
-				launch_iso_build(TEMP_PATH1, TEMP_PATH2, true);
+				//
 			}
 		} // Build ISO from file
 		else if(set_menu2 == 8)
@@ -846,7 +840,7 @@
 							{
 								sprintf(temp_buffer, "%s/%s", path1, entries1[s].d_name);
 								sprintf(TEMP_PATH1, "/dev_hdd0/tmp/wmtmp/%s.iso", entries1[s].d_name);
-								launch_iso_build(TEMP_PATH1, temp_buffer, false);
+								launch_iso_build(TEMP_PATH1, temp_buffer);
 							}
 						}
 					}
@@ -871,7 +865,7 @@
 							{
 								sprintf(temp_buffer, "%s/%s", path2, entries2[s].d_name);
 								sprintf(TEMP_PATH2, "/dev_hdd0/tmp/wmtmp/%s.iso", entries2[s].d_name);
-								launch_iso_build(TEMP_PATH2, temp_buffer, false);
+								launch_iso_build(TEMP_PATH2, temp_buffer);
 							}
 						}
 					}
@@ -943,7 +937,7 @@
 				else
 				{
 					unlink_secure(TEMP_PATH1);
-					launch_iso_build(TEMP_PATH1, TEMP_PATH2, false);
+					launch_iso_build(TEMP_PATH1, TEMP_PATH2);
 
 					if(!fm_pane)
 						{strcpy(path1, "/dev_bdvd\0"); nentries1 = pos1 = sel1 = 0;}

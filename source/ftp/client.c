@@ -118,7 +118,7 @@ void client_thread(void *conn_s_p)
 
         while((cqueue - 1) > itemp);
 
-        // get command and parameter
+        // Get command and parameter
         itemp = strsplit(temp, cmd, 15, param, 495);
 
         strtoupper(cmd);

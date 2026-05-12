@@ -249,114 +249,14 @@ void launch_retro(char *rom_path)
 	else
 		DrawDialogOKTimer("ERROR: Cannot launch the selected Retro game.", 3000.0f);
 }
-
-void launch_video(char *videofile)
-{
-	char flist[MAXPATHLEN];
-
-	sprintf(flist, "%s/USRDIR/TEMP", self_path);
-	mkdir_secure(flist);
-
-	sprintf(flist, "%s/USRDIR/TEMP/SHOWTIME.TXT", self_path);
-	unlink_secure(flist);
-
-	if(is_ntfs_path(videofile)) return;
-
-	char my_video_file[1024];
-	snprintf(my_video_file, 1020, videofile);
-
-	char filename[1024];
-	sprintf(filename, "file://%s", my_video_file);
-
-	FILE *fd;
-
-	fd = fopen(flist, "w");
-	fputs (filename, fd);
-	fclose(fd);
-
-	launch_showtime(true);
-}
 #endif
 
-void launch_showtime(bool playmode)
-{
-	char stself[1024];
-
-	if(!playmode)
-	{
-		sprintf(stself, "%s/USRDIR/TEMP/SHOWTIME.TXT", self_path);
-		unlink_secure(stself);
-	}
-
-	sprintf(stself, "%s/USRDIR/SHOWTIME.SELF", self_path);
-
-	if(file_exists(stself) == false) sprintf(stself, "/dev_hdd0/game/IRISMAN00/USRDIR/USRDIR/SHOWTIME.SELF");
-	if(file_exists(stself) == false) sprintf(stself, "%s/USRDIR/sys/SHOWTIME.SELF", MM_PATH);
-
-	if(file_exists(stself))
-	{
-		reset_sys8_path_table();
-		add_sys8_path_table(MM_PATH, self_path);
-		build_sys8_path_table();
-
-		fun_exit();
-		SaveGameList();
-
-		sysProcessExitSpawn2((const char*)stself, NULL, NULL, NULL, 0, 1200, SYS_PROCESS_SPAWN_STACK_SIZE_1M);
-		exit(0);
-	}
-
-	if(file_exists(MOVIAN))
-	{
-		fun_exit();
-		SaveGameList();
-
-		sysProcessExitSpawn2((const char*)MOVIAN, NULL, NULL, NULL, 0, 1200, SYS_PROCESS_SPAWN_STACK_SIZE_1M);
-		exit(0);
-	}
-
-	if(file_exists(SHOWTIME))
-	{
-		fun_exit();
-		SaveGameList();
-
-		sysProcessExitSpawn2((const char*)SHOWTIME, NULL, NULL, NULL, 0, 1200, SYS_PROCESS_SPAWN_STACK_SIZE_1M);
-		exit(0);
-	}
-}
-
 #ifdef LOADER_MODE
-void launch_luaplayer(char *lua_path) {}
 int mount_psp_iso(char *path) {return FAILED;}
 int launch_iso_game(char *path, int mtype) {return FAILED;}
 int launch_iso_game_mamba(char *path, int mtype) {return FAILED;}
-int launch_iso_build(char *iso_path, char *src_path, bool run_showtime) {return FAILED;}
+int launch_iso_build(char *iso_path, char *src_path) {return FAILED;}
 #else
-void launch_luaplayer(char *lua_path)
-{
-	sysFSStat stat;
-
-	char luaplayer[1024];
-	sprintf(luaplayer, "%s/USRDIR/LuaPlayer.self", self_path);
-
-	if(sysLv2FsStat(luaplayer, &stat) == SUCCESS)
-	{
-		char temp_lua[1024];
-		sprintf(temp_lua, "%s/USRDIR/app.lua", self_path);
-
-		if(strcmp(lua_path, temp_lua))
-		{
-			unlink_secure(temp_lua);
-			CopyFile(lua_path, temp_lua);
-		}
-
-		fun_exit();
-		SaveGameList();
-
-		sysProcessExitSpawn2((const char*)luaplayer, NULL, NULL, NULL, 0, 3071, SYS_PROCESS_SPAWN_STACK_SIZE_1M);
-		exit(0);
-	}
-}
 
 int mount_psp_iso(char *path)
 {
@@ -405,8 +305,6 @@ int launch_iso_game(char *path, int mtype)
 	if((mtype == EMU_PSX) || (mtype == EMU_PSP) || (mtype == EMU_PS2_DVD) || (mtype == EMU_PS3)) ; else
 	if(is_audiovideo(get_extension(path)))
 	{
-		launch_video(path);
-
 		// NTFS
 		if(is_audiovideo(path) || !strcmpext(path, ".iso") || !strcmpext(path, ".iso.0"))
 			type = EMU_BD;
@@ -439,22 +337,21 @@ int launch_iso_game(char *path, int mtype)
 		ps3pad_read();
 		if(is_ps3hen || ((use_cobra || use_mamba) && (old_pad & BUTTON_SELECT)))
 		{
-			mtype = EMU_PSX; // Mount using Cobra method if launched with SELECT+X
+			mtype = EMU_PSX; // Mount using Cobra method if launched with [SELECT]+[X]
 			goto mount_iso;
 		}
 		else if(is_ntfs_path(path))
 		{
-			mtype = EMU_PSX; // Mount using Cobra method if PSX ISO is on NTFS/ext
+			mtype = EMU_PSX; // Mount using Cobra method if PSX ISO is on NTFS/EXT
 		}
 		else
 		{
 			// Launch PSX ISO directly
-
 			reset_sys8_path_table();
 
 			add_sys8_bdvd(NULL, NULL);
 
-			if(lv2peek(0x80000000000004E8ULL) && !use_cobra) syscall_40(1, 0); // disables PS3 Disc-less
+			if(lv2peek(0x80000000000004E8ULL) && !use_cobra) syscall_40(1, 0); // Disable PS3 disc-less
 
 			// Load PSX options
 			sprintf(TEMP_PATH1, "%s", path);
@@ -1012,16 +909,12 @@ int launch_iso_game_mamba(char *path, int mtype)
 	return FAILED;
 }
 
-int launch_iso_build(char *iso_path, char *src_path, bool run_showtime)
+int launch_iso_build(char *iso_path, char *src_path)
 {
 	int type = EMU_DVD; bool is_ntfs_file = strstr(iso_path, "/dev_hdd0/tmp/wmtmp");
 
-	if(run_showtime && is_audiovideo(get_extension(src_path))) launch_video(src_path);
-
 	if(is_audiovideo(get_extension(src_path)) || strstr(src_path, ".pkg") || is_ntfs_file)
 	{
-		if(run_showtime) launch_video(src_path);
-
 		// NTFS
 		type = EMU_BD;
 	}
@@ -1203,8 +1096,6 @@ skip_load:
 				while(pos > 0 && (name[pos] & 192) == 128) pos--; // Skip UTF extra codes
 				strcpy(&name[pos], get_extension(filename));
 			}
-
-			if(run_showtime) {sprintf(TEMP_PATH, "/dev_bdvd/%s", name); launch_video(TEMP_PATH);}
 		}
 
 		if(r == 0) return SUCCESS;

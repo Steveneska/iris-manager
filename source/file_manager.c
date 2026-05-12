@@ -1,20 +1,20 @@
 /*
-	(c) 2011-2013 Hermes/Estwald <www.elotrolado.net>
-	IrisManager (HMANAGER port) (c) 2011 D_Skywalk <http://david.dantoine.org>
-
-	HMANAGER4 is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	HMANAGER4 is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with HMANAGER4.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * (c) 2011-2013 Hermes/Estwald <www.elotrolado.net>
+ * Iris Manager (HMANAGER port) (c) 2011 D_Skywalk <http://david.dantoine.org>
+ *
+ * HMANAGER4 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HMANAGER4 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HMANAGER4. If not, see <http://www.gnu.org/licenses/>.
+ */
 #include "loader.h"
 
 #include <stdio.h>
@@ -51,29 +51,27 @@
 #include "modules.h"
 #include "psx.h"
 
-#define INITED_CALLBACK     1
-#define INITED_SPU          2
-#define INITED_SOUNDLIB     4
-#define INITED_AUDIOPLAYER  8
+#define INITED_CALLBACK		1
+#define INITED_SPU			2
+#define INITED_SOUNDLIB		4
+#define INITED_AUDIOPLAYER	8
 
 #include <spu_soundlib.h>
 #include <audioplayer.h>
 
-#define ROOT_MENU          (max_menu2 == 7)
+#define ROOT_MENU (max_menu2 == 7)
 
 int isDir(char *path );
 int zip_directory(const char *basedir, const char *inputdir, const char *output_filename);
 int extract_zip(const char *zip_file, const char *dest_path);
 int Extract7zFile(const char *zip_file, const char *dest_path);
 
-void launch_luaplayer(char *lua_path);
-
 int sys_game_get_temperature(int sel, u32 *temperature);
 void draw_device_mkiso(float x, float y, int index, char *path);
 void load_background_picture();
 void fun_exit();
 
-#define MAX_SECTIONS    ((0x10000-sizeof(rawseciso_args))/8)
+#define MAX_SECTIONS ((0x10000-sizeof(rawseciso_args))/8)
 
 #define ROT_INC(x ,y , z) {x++; if(x > y) x = z;}
 #define ROT_DEC(x ,y , z) {x--; if(x < y) x = z;}
@@ -84,9 +82,9 @@ typedef struct
 	uint32_t emu_mode;
 	uint32_t num_sections;
 	uint32_t num_tracks;
-	// sections after
-	// sizes after
-	// tracks after
+	// Sections after
+	// Sizes after
+	// Tracks after
 } __attribute__((packed)) rawseciso_args;
 
 extern u32 snd_inited;
@@ -107,7 +105,6 @@ extern bool options_locked;
 extern char psp_launcher_path[MAXPATHLEN];
 extern char retroarch_path[MAXPATHLEN];
 
-extern char browser_extensions[100];
 extern char rom_extensions[300];
 extern char retro_root_path[ROMS_MAXPATHLEN];
 extern char retro_snes_path[ROMS_MAXPATHLEN];
@@ -159,18 +156,13 @@ extern int bk_picture;
 #define BLINK       0x10
 #define BLINK_SLOW  0x20
 
-#define MOVIAN   "/dev_hdd0/game/HTSS00003/USRDIR/movian.self"
-#define SHOWTIME "/dev_hdd0/game/HTSS00003/USRDIR/showtime.self"
-
-
-////////////////
 int pos1 = 0;
 int pos2 = 0;
 
 int sel1 = 0;
 int sel2 = 0;
 
-#define MAX_PATH_LEN   0x420
+#define MAX_PATH_LEN 0x420
 
 static int audio_pane = 0;
 static char audio_file[MAX_PATH_LEN];
@@ -185,7 +177,7 @@ static int FullScreen = 0;
 static int png_signal = 0;
 static int exitcode = 0;
 
-static int update_device_sizes = 1|2; // flags to update the free device space calling to the function (1-> win1  | 2 -> win2)
+static int update_device_sizes = 1|2; // Flags to update the free device space
 
 char hex_path[MAX_PATH_LEN];
 
@@ -225,15 +217,12 @@ static sysFSStat stat2;
 
 static u64 free_device1 = 0ULL;
 static u64 free_device2 = 0ULL;
-////////////////
 
 static u64 pos = 0;
 static u64 readed = 0;
 static int e_x = 0, e_y = 0;
 
-#define MSG_HOW_TO_UNMOUNT_DEVICE  " (USB_00%i) Press SELECT + [] to Unmount USB device"
-
-////////////////
+#define MSG_HOW_TO_UNMOUNT_DEVICE  " Press [SELECT] + [SQUARE] to remove USB_00%i device"
 
 int LoadTexturePNG(char * filename, int index);
 int LoadTextureJPG(char * filename, int index);
@@ -244,26 +233,26 @@ extern char temp_buffer[8192];
 extern int firmware;
 extern char self_path[MAXPATHLEN];
 
-#define HEX_EDIT        0x1C00
-#define HEX_READ        0x1E00
+#define HEX_EDIT 0x1C00
+#define HEX_READ 0x1E00
 
-#define MEM_MESSAGE_OFFSET  0x400
-#define TEMP_PATH_OFFSET    0x1000
-#define TEMP_PATH1_OFFSET   0x1400
-#define TEMP_PATH2_OFFSET   0x1800
+#define MEM_MESSAGE_OFFSET	0x400
+#define TEMP_PATH_OFFSET	0x1000
+#define TEMP_PATH1_OFFSET	0x1400
+#define TEMP_PATH2_OFFSET	0x1800
 
-#define MEM_MESSAGE     temp_buffer + MEM_MESSAGE_OFFSET
-#define TEMP_PATH       temp_buffer + TEMP_PATH_OFFSET
-#define TEMP_PATH1      temp_buffer + TEMP_PATH1_OFFSET
-#define TEMP_PATH2      temp_buffer + TEMP_PATH2_OFFSET
-#define MEM_HEX_EDIT    temp_buffer + HEX_EDIT   //0X180
-#define MEM_HEX_READ    temp_buffer + HEX_READ   //0X180
+#define MEM_MESSAGE		temp_buffer + MEM_MESSAGE_OFFSET
+#define TEMP_PATH		temp_buffer + TEMP_PATH_OFFSET
+#define TEMP_PATH1		temp_buffer + TEMP_PATH1_OFFSET
+#define TEMP_PATH2		temp_buffer + TEMP_PATH2_OFFSET
+#define MEM_HEX_EDIT	temp_buffer + HEX_EDIT // 0X180
+#define MEM_HEX_READ	temp_buffer + HEX_READ // 0X180
 
 int8_t mnt_mode = 1; // 0 = Mount NTFS file as fake ISO, 1 = Mount and exit to XMB
 
 int8_t mount_option = 0;
-int8_t copy_mode = 0; // 0=Normal copy, 1=allow shadow copy, 2=update/copy new, 3=zip folder
-int8_t truncate_mode = 0; // 0=Delete, 1=Truncate
+int8_t copy_mode = 0; // 0 = Normal copy, 1 = Allow shadow copy, 2 = Update/Copy new, 3 = ZIP folder
+int8_t truncate_mode = 0; // 0 = Delete, 1=Truncate
 
 int8_t exit_option = 0; // 0 = Exit File Manager, 1 = Exit to XMB, 2 = Restart the PS3
 
@@ -272,9 +261,6 @@ int mount_psp_iso(char *path);
 
 int sys_fs_mount(char const* deviceName, char const* deviceFileSystem, char const* devicePath, int writeProt);
 int sys_fs_umount(char const* devicePath);
-
-//void MSGBOX(char *text, char *text2) {sprintf(MEM_MESSAGE, "%s = %s", text, text2); DrawDialogOKTimer(MEM_MESSAGE, 3000.0f);}    //debug message
-//void MSGBOX2(char *text, int i) {sprintf(MEM_MESSAGE, "%s = %i", text, i); DrawDialogOKTimer(MEM_MESSAGE, 5000.0f);}    //debug message
 
 char * getlv2error(s32 error)
 {
@@ -384,13 +370,11 @@ char * getlv2error(s32 error)
 	}
 }
 
-/***********************************************************************************************************/
-/* msgDialog                                                                                               */
-/***********************************************************************************************************/
-
-
-static msgType mdialogprogress =   MSG_DIALOG_SINGLE_PROGRESSBAR | MSG_DIALOG_MUTE_ON;
-static msgType mdialogprogress2 =   MSG_DIALOG_DOUBLE_PROGRESSBAR | MSG_DIALOG_MUTE_ON;
+/************************************************************************/
+/* msgDialog															*/
+/************************************************************************/
+static msgType mdialogprogress =  MSG_DIALOG_SINGLE_PROGRESSBAR | MSG_DIALOG_MUTE_ON;
+static msgType mdialogprogress2 = MSG_DIALOG_DOUBLE_PROGRESSBAR | MSG_DIALOG_MUTE_ON;
 
 static volatile int progress_action = 0;
 
@@ -449,7 +433,6 @@ static void progress_callback(msgButton button, void *userdata)
 			break;
 	}
 }
-
 
 static void update_bar(u32 cpart)
 {
@@ -514,12 +497,12 @@ void DrawBox2(float x, float y, float z, float w, float h)
 #ifndef LOADER_MODE
 static int entry_compare(const void *va, const void *vb)
 {
-	sysFSDirent * a =  (sysFSDirent *) va;
-	sysFSDirent * b =  (sysFSDirent *) vb;
+	sysFSDirent * a = (sysFSDirent *) va;
+	sysFSDirent * b = (sysFSDirent *) vb;
 
-	if((a->d_type & IS_DIRECTORY) >  (b->d_type & IS_DIRECTORY) ||
-	  ((a->d_type & IS_DIRECTORY) == (b->d_type & IS_DIRECTORY) && strcmp(a->d_name, b->d_name) < 0) ||
-	  !strcmp(a->d_name, ".."))
+	if((a->d_type & IS_DIRECTORY) > (b->d_type & IS_DIRECTORY) ||
+		((a->d_type & IS_DIRECTORY) == (b->d_type & IS_DIRECTORY) && strcmp(a->d_name, b->d_name) < 0) ||
+		!strcmp(a->d_name, ".."))
 		return -1;
 	else
 		return 1;
@@ -588,7 +571,7 @@ static int CountFiles(char* path, int *nfiles, int *nfolders, u64 *size)
 
 	read = sizeof(sysFSDirent);
 	while ((!is_ntfs && !sysLv2FsReadDir(dfd, &dir, &read)) ||
-		   ( is_ntfs &&  ps3ntfs_dirnext(pdir, dir.d_name, &st) == SUCCESS))
+			( is_ntfs && ps3ntfs_dirnext(pdir, dir.d_name, &st) == SUCCESS))
 	{
 		if (!is_ntfs && !read)
 			break;
@@ -641,7 +624,6 @@ static int CountFiles(char* path, int *nfiles, int *nfolders, u64 *size)
 	}
 
 skip:
-
 	path[p1]= 0;
 	if(is_ntfs) ps3ntfs_dirclose(pdir); else sysLv2FsCloseDir(dfd);
 
@@ -654,12 +636,12 @@ u64 get_free_space(char * path, bool usecache)
 	static u64 cached_freeSize[20];
 	static int cached_pathHash[20];
 
-	if(!path || path[1] == 0 || path[1] == 'a' || path[1] == 'h' || (path[5] == 'b' && path[6] == 'd')) return 0; //NULL, /, app_home, host_root, /dev_bdvd
+	if(!path || path[1] == 0 || path[1] == 'a' || path[1] == 'h' || (path[5] == 'b' && path[6] == 'd')) return 0; // NULL, /, app_home, host_root, /dev_bdvd
 
 	u32 blockSize;
 	u64 freeSize = 0;
 
-	//get device name ending with slash e.g. /dev_hdd0/
+	// Get device name ending with slash e.g. /dev_hdd0/
 	int n = 1; while(path[n] != '/' && path[n] != 0) n++;
 	memcpy(temp_buffer, path, n);
 	temp_buffer[n] = '/';
@@ -700,12 +682,12 @@ u64 get_free_space(char * path, bool usecache)
 			return freeSize;
 		}
 
-	if(i >= 20) //rotate cached values
+	if(i >= 20) // Rotate cached values
 	{
 		for(i = 19; i > 0; i--)
 		{
-		   cached_pathHash[i] = cached_pathHash[i-1];
-		   cached_freeSize[i] = cached_freeSize[i-1];
+			cached_pathHash[i] = cached_pathHash[i-1];
+			cached_freeSize[i] = cached_freeSize[i-1];
 		}
 
 		cached_pathHash[i] = hash;
@@ -751,14 +733,7 @@ static int level_dump(char *path, u64 size, int mode)
 		lv1_reg regs_i, regs_o;
 
 		memset(&regs_i, 0, sizeof(regs_i));
-/*
-		regs_i.reg11 = 0xB6;
-		sys8_lv1_syscall(&regs_i, &regs_o);
 
-		if(((int) regs_o.reg3) <0) {
-			return  (int) 0x80010004;
-		}
-*/
 		single_bar("LV1 Dump process");
 
 		for(n = 0; n < 0x1000000/8; n++)
@@ -818,7 +793,7 @@ static int level_dump(char *path, u64 size, int mode)
 		readed = length - pos; if(readed > 0x100000ULL) readed = 0x100000ULL;
 
 		if(is_ntfs)
-		   {ret = ps3ntfs_write(fd, (void *) &mem[pos>>3], (int) readed); writed = (u64) ret; if(ret > 0) ret = 0;}
+			{ret = ps3ntfs_write(fd, (void *) &mem[pos>>3], (int) readed); writed = (u64) ret; if(ret > 0) ret = 0;}
 		else
 			ret = sysLv2FsWrite(fd, &mem[pos>>3], readed, &writed);
 
@@ -859,9 +834,9 @@ skip:
 
 #undef AUTO_BUTTON_REP2
 #define AUTO_BUTTON_REP2(v, b) if(v && (old_pad & b)) { \
-								 v++; \
-								 if(v > 10) {v = 0; new_pad |= b;} \
-							   } else v = 0;
+	v++; \
+	if(v > 10) {v = 0; new_pad |= b;} \
+	} else v = 0;
 
 #include "mount_ntfs.h"
 #include "mount_game.h"
@@ -879,7 +854,7 @@ static char cur_path2[MAX_PATH_LEN];
 
 static void unrar_extract(const char* rarFilePath, const char* dstPath)
 {
-	HANDLE hArcData; //Archive Handle
+	HANDLE hArcData; // Archive handle
 	struct RAROpenArchiveDataEx rarOpenArchiveData;
 	struct RARHeaderDataEx rarHeaderData;
 	memset(&rarOpenArchiveData, 0, sizeof(rarOpenArchiveData));
@@ -913,7 +888,7 @@ static void unrar_extract(const char* rarFilePath, const char* dstPath)
 	RARCloseArchive(hArcData);
 }
 
-#define EMU_PS2		EMU_PS2_DVD
+#define EMU_PS2 EMU_PS2_DVD
 
 void extract_file(char *path1, char *path2, char *filename)
 {
@@ -954,7 +929,7 @@ void extract_file(char *path1, char *path2, char *filename)
 
 		if(!extracted)
 		{
-			// clean extract folder
+			// Clean extract folder
 			int fd;
 			sysFSDirent dir; size_t read;
 
@@ -1018,7 +993,7 @@ void extract_file(char *path1, char *path2, char *filename)
 	{
 		int len = sprintf(TEMP_PATH, "/%s", filename + 4);
 		for(int i = 0; i < len; i++) if(*(TEMP_PATH + i) == '~') *(TEMP_PATH + i) = '/';
-		*(TEMP_PATH + len - 4) = 0; // remove .zip
+		*(TEMP_PATH + len - 4) = 0; // Remove .zip
 		dest_path = TEMP_PATH;
 
 		if(!strncmp(dest_path, "/dev_blind/", 11))
@@ -1047,67 +1022,11 @@ void extract_file(char *path1, char *path2, char *filename)
 	}
 }
 
-static void browse_file(char *ext, char *path, char *filename)
-{
-	if(strcasecmp(ext, ".html") == SUCCESS || strcasecmp(ext, ".htm") == SUCCESS)
-		sprintf(TEMP_PATH, "http://127.0.0.1%s/%s", path, filename);
-	else
-	{
-		sprintf(TEMP_PATH, "%s/USRDIR/temp.txt", self_path);
-		unlink_secure(TEMP_PATH);
-
-		sprintf(TEMP_PATH, "%s/USRDIR/temp.html", self_path);
-		unlink_secure(TEMP_PATH);
-
-		FILE *fd;
-
-		fd = fopen(TEMP_PATH, "w");
-
-		if(!strcasecmp(ext, ".cfg"))
-		{
-			sprintf(TEMP_PATH1, "%s/%s", path1, filename);
-			sprintf(TEMP_PATH2, "%s/USRDIR/temp.txt", self_path);
-			CopyFile(TEMP_PATH1, TEMP_PATH2);
-
-			sprintf(temp_buffer, "<body bgcolor=white text=blue leftmargin=0 rightmargin=0><font size=5>%s</font></br><iframe src='http://127.0.0.1/%s' border=0 ",
-					filename, TEMP_PATH1);
-		}
-		else
-			sprintf(temp_buffer, "<body bgcolor=white text=blue leftmargin=0 rightmargin=0><font size=5>%s</font></br><iframe src='http://127.0.0.1/%s/%s' border=0 ",
-					filename, path, filename);
-
-		strcat(temp_buffer, "width=100% height=100%></body>");
-		fputs (temp_buffer, fd);
-		fclose(fd);
-
-		sprintf(TEMP_PATH, "http://127.0.0.1/%s/USRDIR/temp.html", self_path);
-	}
-
-	char* launchargv[2];
-	memset(launchargv, 0, sizeof(launchargv));
-
-	int len = strlen(temp_buffer);
-	launchargv[0] = (char*)malloc(len + 1); strcpy(launchargv[0], TEMP_PATH);
-	launchargv[1] = NULL;
-
-	char self[256];
-	sprintf(self, "%s/USRDIR/browser.self", self_path);
-
-	if(file_exists(self))
-	{
-		fun_exit();
-		SaveGameList();
-
-		sysProcessExitSpawn2((const char*)self, (char const**)launchargv, NULL, NULL, 0, 3071, SYS_PROCESS_SPAWN_STACK_SIZE_1M);
-	}
-}
-
 int exec_item(char *path, char *path2, char *filename, u32 d_type, s64 entry_size)
 {
 	char *ext = get_extension(filename);
 
-	if(/*(use_mamba || use_cobra) &&*/ !(d_type & IS_MARKED) &&
-		   (strcasestr(".mp3|.ogg", ext) != NULL))
+	if(!(d_type & IS_MARKED) && (strcasestr(".mp3|.ogg", ext) != NULL))
 	{
 		sprintf(TEMP_PATH, "%s/%s", path, filename);
 
@@ -1123,21 +1042,7 @@ int exec_item(char *path, char *path2, char *filename, u32 d_type, s64 entry_siz
 			if(PlayAudio(audio_file, 0, AUDIO_ONE_TIME) == 0) snd_inited|= INITED_AUDIOPLAYER;
 		}
 	}
-	else
-	if((use_mamba || use_cobra) && !(d_type & IS_MARKED) && is_audiovideo(ext))
-	{
-		sprintf(TEMP_PATH1, "%s/USRDIR/TEMP/showtime.iso", self_path);
-		sprintf(TEMP_PATH2, "%s/%s", path, filename);
-
-		launch_iso_build(TEMP_PATH1, TEMP_PATH2, true);
-	}
-	else if(!(d_type & IS_MARKED) && is_audiovideo(ext))
-	{
-		sprintf(TEMP_PATH, "%s/%s", path, filename);
-		launch_video(TEMP_PATH);
-	}
-	else if((use_mamba || use_cobra) && !(d_type & IS_MARKED) &&
-		   (strcasestr(".iso|.bin|.img|.mdf|.iso.0", ext) != NULL))
+	else if((use_mamba || use_cobra) && !(d_type & IS_MARKED) && (strcasestr(".iso|.bin|.img|.mdf|.iso.0", ext) != NULL))
 	{
 		sprintf(TEMP_PATH, "%s/%s", path, filename);
 		launch_iso_game(TEMP_PATH, DETECT_EMU_TYPE); // mount_game.h
@@ -1161,22 +1066,11 @@ int exec_item(char *path, char *path2, char *filename, u32 d_type, s64 entry_siz
 		extract_file(path, path2, filename);
 	}
 
-	else if(!(d_type & IS_MARKED) &&
-			is_retro_file(path, filename))
+	else if(!(d_type & IS_MARKED) && is_retro_file(path, filename))
 	{
 		char rom_path[MAXPATHLEN];
 		sprintf(rom_path, "%s/%s", path, filename);
 		launch_retro(rom_path);
-	}
-	else if(!(d_type & IS_MARKED) && strcasecmp(ext, ".lua") == SUCCESS)
-	{
-		char lua_path[MAXPATHLEN];
-		sprintf(lua_path, "%s/%s", path, filename);
-		launch_luaplayer(lua_path);
-	}
-	else if(!(d_type & IS_MARKED) && is_browser_file(ext))
-	{
-		browse_file(ext, path, filename);
 	}
 
 	else if(!(d_type & IS_MARKED) && strcasecmp(ext, ".p3t") == SUCCESS)
@@ -1266,7 +1160,7 @@ int exec_item(char *path, char *path2, char *filename, u32 d_type, s64 entry_siz
 				sprintf(TEMP_PATH2, "%s/%s", path, filename);
 
 				unlink_secure(TEMP_PATH1);
-				launch_iso_build(TEMP_PATH1, TEMP_PATH2, false);
+				launch_iso_build(TEMP_PATH1, TEMP_PATH2);
 
 				{SaveGameList(); fun_exit(); exit(0);}
 			}
@@ -1348,7 +1242,7 @@ int exec_item(char *path, char *path2, char *filename, u32 d_type, s64 entry_siz
 				else
 				{
 					unlink_secure(TEMP_PATH1);
-					launch_iso_build(TEMP_PATH1, TEMP_PATH2, false);
+					launch_iso_build(TEMP_PATH1, TEMP_PATH2);
 				}
 
 				{SaveGameList(); fun_exit(); exit(0);}
@@ -1652,8 +1546,8 @@ void auto_png(char *path, char *filename, u32 d_type, u32 entry_type)
 		else if(strlen(filename) >= 40 && strstr(filename, "_00-") != NULL)
 		{
 			sprintf(TEMP_PATH, "/dev_hdd0/game/BLES80608/USRDIR/covers/%c%c%c%c%c%c%c%c%c.JPG",
-					filename[ 7], filename[ 8], filename[ 9], filename[10],
-					filename[11], filename[12], filename[13], filename[14], filename[15]);
+				filename[ 7], filename[ 8], filename[ 9], filename[10],
+				filename[11], filename[12], filename[13], filename[14], filename[15]);
 
 			if(LoadTextureJPG(TEMP_PATH, TEMP_PICT) == SUCCESS)
 			{
@@ -1662,8 +1556,8 @@ void auto_png(char *path, char *filename, u32 d_type, u32 entry_type)
 			else
 			{
 				sprintf(TEMP_PATH, "/dev_hdd0/GAMES/covers/%c%c%c%c%c%c%c%c%c.JPG",
-						filename[ 7], filename[ 8], filename[ 9], filename[10],
-						filename[11], filename[12], filename[13], filename[14], filename[15]);
+					filename[ 7], filename[ 8], filename[ 9], filename[10],
+					filename[11], filename[12], filename[13], filename[14], filename[15]);
 
 				if(LoadTextureJPG(TEMP_PATH, TEMP_PICT) == SUCCESS)
 				{
@@ -1800,7 +1694,8 @@ int file_manager(char *pathw1, char *pathw2)
 			int r = NTFS_Event_Mount(i);
 
 			if(r == 1)
-			{   // Mount device
+			{
+				// Mount device
 				if(mounts[i])
 				{
 					// Change to root if unmount the device
@@ -1889,7 +1784,6 @@ int file_manager(char *pathw1, char *pathw2)
 			frame = 0;
 
 			// Update panel list #1
-
 			if(update_devices1) {nentries1 = 0; update_device_sizes |= 1;}
 
 			if((nentries1 == 0) || ((path1[1] == 0)))
@@ -1998,7 +1892,6 @@ int file_manager(char *pathw1, char *pathw2)
 			}
 
 			// Update panel list #2
-
 			if(update_devices2) {nentries2 = 0; update_device_sizes |= 2;}
 
 			if((nentries2 == 0) || (path2[1] == 0))
@@ -2173,7 +2066,6 @@ int file_manager(char *pathw1, char *pathw2)
 		}
 
 		// Update free space (panel #1)
-
 		if((update_device_sizes & 1) || (path1[1] == 0))
 		{
 			if(!nentries1);
@@ -2196,7 +2088,6 @@ int file_manager(char *pathw1, char *pathw2)
 		}
 
 		// Update free space (panel #2)
-
 		if((update_device_sizes & 2) || (path2[1] == 0))
 		{
 			if(!nentries2) ;
@@ -2239,7 +2130,7 @@ int file_manager(char *pathw1, char *pathw2)
 			{
 				tiny3d_SetTextureWrap(0, Png_offset[TEMP_PICT], Png_datas[TEMP_PICT].width,
 					Png_datas[TEMP_PICT].height, Png_datas[TEMP_PICT].wpitch,
-					TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
+					TINY3D_TEX_FORMAT_A8R8G8B8, TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
 
 				if (FullScreen == 1)
 				{
@@ -2281,7 +2172,6 @@ int file_manager(char *pathw1, char *pathw2)
 		}
 
 		// Popup menu
-
 		if(set_menu2)
 		{
 			#include "fm_popup_menu_show.h"
@@ -2315,11 +2205,11 @@ int file_manager(char *pathw1, char *pathw2)
 		{
 			if(new_pad & BUTTON_START)
 				break;
-			else if(new_pad & BUTTON_CIRCLE_)
+			/*else if(new_pad & BUTTON_CIRCLE_)
 			{
 				if(DrawDialogYesNo("Close File Manager and exit?") == YES) {SaveGameList(); fun_exit(); exit(0);}
 				new_pad = 0;
-			}
+			}*/
 		}
 
 		if((new_pad & BUTTON_TRIANGLE) && (old_pad & BUTTON_SELECT)) set_menu2 = 0;
@@ -2332,8 +2222,7 @@ int file_manager(char *pathw1, char *pathw2)
 			if(!strncmp(path1, "/dev_hdd0", 9) && !strncmp(path2, "/dev_hdd0", 9)) copy_mode = 1; // Use shadow copy
 		}
 
-		// Execute popup-menu option
-
+		// Execute popup menu option
 		if(set_menu2)
 		{
 			#include "fm_popup_menu_exec.h"
@@ -2501,7 +2390,8 @@ int file_manager(char *pathw1, char *pathw2)
 						FullScreen = png_signal = 0;
 					}
 					else if(entries1[sel1].d_type & IS_DIRECTORY)
-					{   // Change dir
+					{
+						// Change directory
 						if((path1[1] == 0)) update_device_sizes |= 1;
 
 						for(n = 0; n < MAX_ENTRIES; n++) entries1_type[n] = 0;
@@ -2515,10 +2405,11 @@ int file_manager(char *pathw1, char *pathw2)
 					{
 						if(exec_item(path1, path2, entries1[sel1].d_name, entries1[sel1].d_type, entries1_size[sel1])) continue;
 					}
-				} // cross
+				}
 
 				if(!(old_pad & BUTTON_SELECT) && (new_pad & BUTTON_SQUARE))
-				{   // select one file/folder
+				{
+					// Select one file/folder
 					if((path1[1] != 0) && strcmp(entries1[sel1].d_name, ".."))
 					{
 						if(FullScreen && strcasestr(".jpg|.png", get_extension(entries1[sel1].d_name)) != NULL)
@@ -2539,13 +2430,14 @@ int file_manager(char *pathw1, char *pathw2)
 							}
 						}
 					}
-				}   // square
+				}
 				else if((old_pad & BUTTON_SELECT) && (new_pad & BUTTON_SQUARE))
 				{
 					u32 flag = (entries1[sel1].d_type ^ IS_MARKED) & IS_MARKED;
 
 					if((path1[1] != 0))
-					{   // select all files/folders
+					{
+						// Select all files/folders
 						selcount1 = 0; selsize1 = 0;
 
 						struct stat s;
@@ -2571,14 +2463,15 @@ int file_manager(char *pathw1, char *pathw2)
 					{
 						if(!strncmp((char *) entries1[sel1].d_name, "ntfs", 4) || !strncmp((char *) entries1[sel1].d_name, "ext", 3))
 						{
-							sprintf(MEM_MESSAGE, "Do you want to unmount USB00%i device?", NTFS_Test_Device(entries1[sel1].d_name));
+							sprintf(MEM_MESSAGE, "Do you want to eject the storage device plugged into USB00%i?", NTFS_Test_Device(entries1[sel1].d_name));
 
 							if(DrawDialogYesNo(MEM_MESSAGE) == YES)
 							{
 								int i = NTFS_Test_Device(entries1[sel1].d_name);
 
 								if(mounts[i])
-								{   // Change to root if unmount the device
+								{
+									// Change to root if the device is removed
 									for (int k = 0; k < mountCount[i]; k++)
 									{
 										if((mounts[i]+k)->name[0])
@@ -2589,7 +2482,6 @@ int file_manager(char *pathw1, char *pathw2)
 									}
 								}
 
-
 								NTFS_UnMount(i);
 
 								if((path1[1] == 0)) {path1[1] = nentries1 = pos1 = sel1 = 0; update_device_sizes |= 1; update_devices1 = true;}
@@ -2597,7 +2489,7 @@ int file_manager(char *pathw1, char *pathw2)
 							}
 						}
 					}
-				} // select+square
+				}
 
 				if(new_pad & BUTTON_L3)
 				{
@@ -2606,7 +2498,7 @@ int file_manager(char *pathw1, char *pathw2)
 					update_device_sizes |= 1;
 
 					change_path1 = toggle_path_l3(path1, path2, change_path1);
-				} // l3
+				}
 
 				else if(new_pad & BUTTON_R3)
 				{
@@ -2615,12 +2507,10 @@ int file_manager(char *pathw1, char *pathw2)
 					update_device_sizes |= 1;
 
 					change_path1 = toggle_path_r3(path1, path2, change_path1);
-				} // r3
+				}
 			}
 			else
 			{
-				// file_manager pane 1
-
 				if((new_pad & BUTTON_TRIANGLE) && (old_pad & BUTTON_SELECT))
 				{
 					frame = 300;
@@ -2726,7 +2616,7 @@ int file_manager(char *pathw1, char *pathw2)
 					{
 						if(!strncmp((char *) entries2[sel2].d_name, "ntfs", 4) || !strncmp((char *) entries2[sel2].d_name, "ext", 3))
 						{
-							sprintf(MEM_MESSAGE, "Do you want to unmount USB00%i device?", NTFS_Test_Device(entries2[sel2].d_name));
+							sprintf(MEM_MESSAGE, "Do you want to eject the storage device plugged into USB00%i?", NTFS_Test_Device(entries2[sel2].d_name));
 
 							if(DrawDialogYesNo(MEM_MESSAGE) == YES)
 							{
@@ -2734,7 +2624,7 @@ int file_manager(char *pathw1, char *pathw2)
 
 								if(mounts[i])
 								{
-									// Change to root if unmount the device
+									// Change to root if the device is removed
 									for (int k = 0; k < mountCount[i]; k++)
 									{
 										if((mounts[i]+k)->name[0])
@@ -2744,7 +2634,6 @@ int file_manager(char *pathw1, char *pathw2)
 										}
 									}
 								}
-
 
 								NTFS_UnMount(i);
 

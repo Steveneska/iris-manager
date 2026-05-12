@@ -274,17 +274,7 @@ autolaunch_proc:
 					fclose(fp);
 				}
 #endif
-				if(!strncmp(directories[currentgamedir].title_id, "HTSS00003", 9))
-				{
-					if((old_pad & (BUTTON_SELECT | BUTTON_L2)) && file_exists("/dev_hdd0/game/HTSS00003/USRDIR/showtime.self"))
-					{
-						sysProcessExitSpawn2("/dev_hdd0/game/HTSS00003/USRDIR/showtime.self", NULL, NULL, NULL, 0, 3071, SYS_PROCESS_SPAWN_STACK_SIZE_1M);
-						return r;
-					}
-					else
-						launch_showtime(false);
-				}
-				else if(!strncmp(directories[currentgamedir].title_id, NETHOST, 9))
+				if(!strncmp(directories[currentgamedir].title_id, NETHOST, 9))
 				{
 					// Mount Network Game through WebMAN
 					if(bAllowNetGames && get_net_status() == SUCCESS)
@@ -791,19 +781,7 @@ autolaunch_proc:
 						}
 						else if(directories[currentgamedir].flags & D_FLAG_HOMEB_DVD)
 						{
-							// Is DVDISO or MKV
-							int p = strlen(directories[currentgamedir].path_name);
-							if(is_audiovideo(&directories[currentgamedir].path_name[p - 4]))
-							{
-								sprintf(temp_buffer, "%s", directories[currentgamedir].path_name); // Launch MKV, MP4, AVI
-								sprintf(temp_buffer + 2048, "%s/USRDIR/TEMP/showtime.iso", self_path);
-								launch_iso_build(temp_buffer + 2048, temp_buffer, true);
-							}
-							else
-							{
-								launch_iso_game(directories[currentgamedir].path_name, EMU_DVD); // Launch DVD Video
-							}
-
+							launch_iso_game(directories[currentgamedir].path_name, EMU_DVD); // Launch DVD Video
 							return r;
 						}
 

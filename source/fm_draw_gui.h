@@ -22,7 +22,7 @@ static void display_icon(int x, int y, int z, int icon)
 {
 	tiny3d_SetTextureWrap(0, Png_res_offset[7 + icon], Png_res[7 + icon].width,
 		Png_res[7 + icon].height, Png_res[7 + icon].wpitch,
-		TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
+		TINY3D_TEX_FORMAT_A8R8G8B8, TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
 
 	DrawTextBox(x+2, y, z, 18, 18, WHITE);
 }
@@ -177,7 +177,6 @@ void draw_file_manager()
 					if(!strcasecmp(ext, ".png")) type = FILE_TYPE_PNG; else
 					if(!strcasecmp(ext, ".jpg")) type = FILE_TYPE_JPG; else
 					if(!strcasecmp(ext, ".zip")) type = FILE_TYPE_ZIP; else
-					if(!strcasecmp(ext, ".lua")) type = FILE_TYPE_LUA; else
 					if(strcasestr(".iso|.bin|.img|.mdf|.iso.0", ext) != NULL) type = FILE_TYPE_ISO; else
 					if(is_audiovideo(ext)) type = FILE_TYPE_ISO;
 
@@ -321,7 +320,6 @@ void draw_file_manager()
 					if(!strcasecmp(ext, ".png")) type = FILE_TYPE_PNG; else
 					if(!strcasecmp(ext, ".jpg")) type = FILE_TYPE_JPG; else
 					if(!strcasecmp(ext, ".zip")) type = FILE_TYPE_ZIP; else
-					if(!strcasecmp(ext, ".lua")) type = FILE_TYPE_LUA; else
 					if(strcasestr(".iso|.bin|.img|.mdf|.iso.0", ext) != NULL) type = FILE_TYPE_ISO; else
 					if(is_audiovideo(ext)) type = FILE_TYPE_ISO;
 

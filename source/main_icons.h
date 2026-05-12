@@ -465,32 +465,6 @@ int get_icon(char * path, const int num_dir)
 
 	if (!is_update)
 	{
-		if(strlen(directories[num_dir].title_id) == 9 && strstr("NETBROWSE|IRISMAN00|PRXLOADER|CDGPLAYER|GMPADTEST|BLES80616", directories[num_dir].title_id) != NULL)
-		{
-			if(strncmp(directories[num_dir].title_id, "IRISMAN00", 9) == SUCCESS)
-				sprintf(path, "%s/USRDIR/icons/NETBROWSE.PNG", self_path);
-			else
-				sprintf(path, "%s/USRDIR/icons/%s.PNG", self_path, directories[num_dir].title_id);
-
-			if(file_exists(path)) return SUCCESS;
-
-			sprintf(path, "%s/USRDIR/icons/DEFAULT.PNG", self_path);
-			if(file_exists(path)) return SUCCESS;
-
-			return FAILED;
-		}
-		else if((strlen(directories[num_dir].title_id) == 9 && strstr(custom_homebrews, directories[num_dir].title_id) != NULL) ||
-				(directories[num_dir].flags & HOMEBREW_FLAG) == HOMEBREW_FLAG)
-		{
-			sprintf(path, "/dev_hdd0/game/%s/ICON0.PNG", directories[num_dir].title_id);
-			if(file_exists(path)) return SUCCESS;
-
-			sprintf(path, "%s/USRDIR/icons/DEFAULT.PNG", self_path);
-			if(file_exists(path)) return SUCCESS;
-
-			return FAILED;
-		}
-
 		// Add PSX/PS2 ISO
 		if(directories[num_dir].flags & PS1_FLAG)
 		{

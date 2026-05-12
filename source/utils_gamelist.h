@@ -129,25 +129,6 @@ bool add_homebrew_icon(t_directories *list, int *max, char *title_id, char *spat
 
 void add_custom_icons(t_directories *list, int *max)
 {
-	char stself[MAXPATHLEN];
-
-	// Add Internet Browser icon
-	if(mode_homebrew == HOMEBREW_MODE || game_list_category == GAME_LIST_ALL)
-	{
-		sprintf(stself, "%s/USRDIR/BROWSER.SELF", self_path);
-		if(add_homebrew_icon(list, max, "NETBROWSE", stself)) sprintf(list[*max].title, "Internet Browser");
-	}
-
-	// Add Showtime icon
-	if(mode_homebrew == VIDEOS_MODE || mode_homebrew == HOMEBREW_MODE || game_list_category == GAME_LIST_ALL)
-	{
-		sprintf(stself, "%s/USRDIR/SHOWTIME.SELF", self_path);
-		if(file_exists(stself))
-			add_homebrew_icon(list, max, "HTSS00003", stself); // Showtime
-		else
-			add_homebrew_icon(list, max, "HTSS00003", "showtime.SELF");
-	}
-
 	if(mode_homebrew == HOMEBREW_MODE)
 	{
 		char title_id[10];

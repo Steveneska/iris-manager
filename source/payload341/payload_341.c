@@ -126,7 +126,7 @@ int is_payload_loaded_341(void)
 
     v = peekq(0x8000000000017CD0ULL);
 
-    if(v != 0x4E8000203C608001ULL) return HERMES_PAYLOAD; // if syscall 8 is modified payload is resident...
+    if(v != 0x4E8000203C608001ULL) return HERMES_PAYLOAD; // If syscall 8 is modified payload is resident...
 
     return ZERO_PAYLOAD;
 }

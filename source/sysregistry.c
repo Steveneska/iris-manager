@@ -1,6 +1,6 @@
 /*
  * (c) 2013 Hermes/Estwald <www.elotrolado.net>
- * IrisManager (HMANAGER port) (c) 2011 D_Skywalk <http://david.dantoine.org>
+ * Iris Manager (HMANAGER port) (c) 2011 D_Skywalk <http://david.dantoine.org>
  *
  * HMANAGER4 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with HMANAGER4.  If not, see <http://www.gnu.org/licenses/>.
+ * along with HMANAGER4. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "utils.h"

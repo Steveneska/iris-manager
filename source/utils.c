@@ -96,7 +96,6 @@ extern bool is_mamba_v2;
 
 extern int filter_by_letter;
 
-extern int show_custom_icons;
 extern char * language[];
 extern char self_path[MAXPATHLEN];
 extern char video_path[MAXPATHLEN];
@@ -109,7 +108,6 @@ char extension[10];
 
 extern char audio_extensions[300];
 extern char video_extensions[300];
-extern char browser_extensions[100];
 extern char custom_homebrews[400];
 
 extern int retro_mode;
@@ -245,13 +243,6 @@ bool is_audio(char *ext)
 bool is_audiovideo(char *ext)
 {
 	return (is_video(ext) || is_audio(ext));
-}
-
-bool is_browser_file(char *ext)
-{
-	sprintf(extension, "%s ", ext);
-
-	return (strcasestr(browser_extensions, extension) != NULL);
 }
 
 u64 get_filesize(char *path)

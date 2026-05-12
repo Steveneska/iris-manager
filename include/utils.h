@@ -182,7 +182,6 @@ bool is_ntfs_path(char *path);
 bool is_video(char *ext);
 bool is_audio(char *ext);
 bool is_audiovideo(char *ext);
-bool is_browser_file(char *ext);
 
 void filepath_check(char *file);
 

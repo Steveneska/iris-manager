@@ -922,7 +922,7 @@ int cover_update(char *title_id)
 						{
 							tiny3d_SetTextureWrap(0, Png_offset[0], Png_datas[0].width,
 								Png_datas[0].height, Png_datas[0].wpitch,
-								TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
+								TINY3D_TEX_FORMAT_A8R8G8B8, TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
 
 							DrawTextBox(848/2 - 200 - 32, (512 - 230)/2 , 0, 200, 230, 0x8f8f8fff);
 						}
@@ -934,7 +934,7 @@ int cover_update(char *title_id)
 						{
 							tiny3d_SetTextureWrap(0, Png_offset[1], Png_datas[1].width,
 								Png_datas[1].height, Png_datas[1].wpitch,
-								TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
+								TINY3D_TEX_FORMAT_A8R8G8B8, TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
 
 							DrawTextBox(848/2 + 32, (512 - 230)/2 , 0, 200, 230, 0x8f8f8fff);
 						}

@@ -282,7 +282,7 @@ void draw_psx_options(float x, float y, int index)
 	{
 		tiny3d_SetTextureWrap(0, Png_res_offset[IMG_DEFAULT_BACKGROUND], Png_res[IMG_DEFAULT_BACKGROUND].width,
 			Png_res[IMG_DEFAULT_BACKGROUND].height, Png_res[IMG_DEFAULT_BACKGROUND].wpitch,
-			TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
+			TINY3D_TEX_FORMAT_A8R8G8B8, TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
 	}
 
 	DrawTextBox(x, y, 0, 200 * 4 - 8, 150 * 3 - 8, 0xffffffff);
@@ -792,7 +792,7 @@ void draw_psx_options2(float x, float y, int index)
 	{
 		tiny3d_SetTextureWrap(0, Png_res_offset[IMG_DEFAULT_BACKGROUND], Png_res[IMG_DEFAULT_BACKGROUND].width,
 			Png_res[IMG_DEFAULT_BACKGROUND].height, Png_res[IMG_DEFAULT_BACKGROUND].wpitch,
-			TINY3D_TEX_FORMAT_A8R8G8B8,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
+			TINY3D_TEX_FORMAT_A8R8G8B8, TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
 	}
 
 	DrawTextBox(x, y, 0, 200 * 4 - 8, 150 * 3 - 8, 0xffffffff);
