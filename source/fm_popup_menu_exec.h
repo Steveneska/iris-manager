@@ -813,16 +813,12 @@
 				if( (fm_pane == 0 && (entries1[sel1].d_type & IS_DIRECTORY)) ||
 					(fm_pane == 1 && (entries2[sel2].d_type & IS_DIRECTORY)))
 				{
-					pause_music(1);
-
 					DCls();
 					FixDirectory(temp_buffer, 0);
 					DCls();
 
 					msgDialogAbort();
 					msgDialogClose(0);
-
-					pause_music(0);
 				}
 				else if(!fm_pane && use_cobra && is_ntfs_path(path1))
 				{
@@ -968,7 +964,6 @@
 			}
 			else
 			{
-				pause_music(1);
 				patch_error_09(temp_buffer, 0);
 
 				DCls();
@@ -977,8 +972,6 @@
 
 				msgDialogAbort();
 				msgDialogClose(0);
-
-				pause_music(0);
 			}
 
 		} // Fix game

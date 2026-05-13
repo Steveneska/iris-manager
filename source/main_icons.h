@@ -89,91 +89,27 @@ void Load_PNG_resources()
 	Png_res[IMG_BLURAY_DISC].png_in = (void*)bluray_png_bin;
 	Png_res[IMG_BLURAY_DISC].png_size = bluray_png_bin_size;
 
-	Png_res[IMG_DIRECT_ICON].png_in = (void*)direct_png_bin;
-	Png_res[IMG_DIRECT_ICON].png_size = direct_png_bin_size;
-
-	Png_res[IMG_DVD_DISC].png_in = (void*)dvd_png_bin;
-	Png_res[IMG_DVD_DISC].png_size = dvd_png_bin_size;
-
-	Png_res[IMG_FAVORITE_ICON].png_in = (void*)favorite_png_bin;
-	Png_res[IMG_FAVORITE_ICON].png_size = favorite_png_bin_size;
-
-	Png_res[IMG_FTP_ICON].png_in = (void*)ftp_png_bin;
-	Png_res[IMG_FTP_ICON].png_size = ftp_png_bin_size;
+	Png_res[IMG_USB_ICON1].png_in = (void*)usb_png1_bin;
+	Png_res[IMG_USB_ICON1].png_size = usb_png1_bin_size;
 
 	Png_res[IMG_MISSING_ICON].png_in = (void*)missing_png_bin;
 	Png_res[IMG_MISSING_ICON].png_size = missing_png_bin_size;
 
-	Png_res[IMG_USB_ICON1].png_in = (void*)usb_png1_bin;
-	Png_res[IMG_USB_ICON1].png_size = usb_png1_bin_size;
+	Png_res[IMG_DIRECT_ICON].png_in = (void*)direct_png_bin;
+	Png_res[IMG_DIRECT_ICON].png_size = direct_png_bin_size;
 
-	Png_res[IMG_USB_ICON2].png_in = (void*)usb_png2_bin;
-	Png_res[IMG_USB_ICON2].png_size = usb_png2_bin_size;
+	Png_res[IMG_FTP_ICON].png_in = (void*)ftp_png_bin;
+	Png_res[IMG_FTP_ICON].png_size = ftp_png_bin_size;
 
-	// Controller buttons
-	Png_res[IMG_BUTTON_CIRCLE].png_in = (void*)circle_png_bin;
-	Png_res[IMG_BUTTON_CIRCLE].png_size = circle_png_bin_size;
-
-	Png_res[IMG_BUTTON_CROSS].png_in = (void*)cross_png_bin;
-	Png_res[IMG_BUTTON_CROSS].png_size = cross_png_bin_size;
-
-	Png_res[IMG_BUTTON_DOWN].png_in = (void*)down_png_bin;
-	Png_res[IMG_BUTTON_DOWN].png_size = down_png_bin_size;
-
-	Png_res[IMG_BUTTON_L1].png_in = (void*)l1_png_bin;
-	Png_res[IMG_BUTTON_L1].png_size = l1_png_bin_size;
-
-	Png_res[IMG_BUTTON_L2].png_in = (void*)l2_png_bin;
-	Png_res[IMG_BUTTON_L2].png_size = l2_png_bin_size;
-
-	Png_res[IMG_BUTTON_L3].png_in = (void*)l3_png_bin;
-	Png_res[IMG_BUTTON_L3].png_size = l3_png_bin_size;
-
-	Png_res[IMG_BUTTON_LEFT].png_in = (void*)left_png_bin;
-	Png_res[IMG_BUTTON_LEFT].png_size = left_png_bin_size;
-
-	Png_res[IMG_BUTTON_R1].png_in = (void*)r1_png_bin;
-	Png_res[IMG_BUTTON_R1].png_size = r1_png_bin_size;
-
-	Png_res[IMG_BUTTON_R2].png_in = (void*)r2_png_bin;
-	Png_res[IMG_BUTTON_R2].png_size = r2_png_bin_size;
-
-	Png_res[IMG_BUTTON_R3].png_in = (void*)r3_png_bin;
-	Png_res[IMG_BUTTON_R3].png_size = r3_png_bin_size;
-
-	Png_res[IMG_BUTTON_RIGHT].png_in = (void*)right_png_bin;
-	Png_res[IMG_BUTTON_RIGHT].png_size = right_png_bin_size;
-
-	Png_res[IMG_BUTTON_SELECT].png_in = (void*)select_png_bin;
-	Png_res[IMG_BUTTON_SELECT].png_size = select_png_bin_size;
-
-	Png_res[IMG_BUTTON_SQUARE].png_in = (void*)square_png_bin;
-	Png_res[IMG_BUTTON_SQUARE].png_size = square_png_bin_size;
-
-	Png_res[IMG_BUTTON_START].png_in = (void*)start_png_bin;
-	Png_res[IMG_BUTTON_START].png_size = start_png_bin_size;
-
-	Png_res[IMG_BUTTON_TRIANGLE].png_in = (void*)triangle_png_bin;
-	Png_res[IMG_BUTTON_TRIANGLE].png_size = triangle_png_bin_size;
-
-	Png_res[IMG_BUTTON_UP].png_in = (void*)up_png_bin;
-	Png_res[IMG_BUTTON_UP].png_size = up_png_bin_size;
+	Png_res[IMG_PS1_DISC].png_in = (void*)psone_png_bin;
+	Png_res[IMG_PS1_DISC].png_size = psone_png_bin_size;
 
 	// File Manager icons
-	Png_res[IMG_FILE_ICON].png_in = (void*)file_png_bin;
-	Png_res[IMG_FILE_ICON].png_size = file_png_bin_size;
-
 	Png_res[IMG_FOLDER_ICON].png_in = (void*)folder_png_bin;
 	Png_res[IMG_FOLDER_ICON].png_size = folder_png_bin_size;
 
-	Png_res[IMG_IMAGE_ICON].png_in = (void*)img_png_bin;
-	Png_res[IMG_IMAGE_ICON].png_size = img_png_bin_size;
-
-	Png_res[IMG_ISO_ICON].png_in = (void*)iso_png_bin;
-	Png_res[IMG_ISO_ICON].png_size = iso_png_bin_size;
-
-	Png_res[IMG_MUSIC_ICON].png_in = (void*)music_png_bin;
-	Png_res[IMG_MUSIC_ICON].png_size = music_png_bin_size;
+	Png_res[IMG_FILE_ICON].png_in = (void*)file_png_bin;
+	Png_res[IMG_FILE_ICON].png_size = file_png_bin_size;
 
 	Png_res[IMG_PKG_ICON].png_in = (void*)pkg_png_bin;
 	Png_res[IMG_PKG_ICON].png_size = pkg_png_bin_size;
@@ -181,8 +117,20 @@ void Load_PNG_resources()
 	Png_res[IMG_SELF_ICON].png_in = (void*)self_png_bin;
 	Png_res[IMG_SELF_ICON].png_size = self_png_bin_size;
 
-	Png_res[IMG_VIDEO_ICON].png_in = (void*)video_png_bin;
-	Png_res[IMG_VIDEO_ICON].png_size = video_png_bin_size;
+	Png_res[IMG_IMAGE_ICON].png_in = (void*)img_png_bin;
+	Png_res[IMG_IMAGE_ICON].png_size = img_png_bin_size;
+
+	Png_res[IMG_ISO_ICON].png_in = (void*)iso_png_bin;
+	Png_res[IMG_ISO_ICON].png_size = iso_png_bin_size;
+
+	Png_res[IMG_PS2_DISC].png_in = (void*)pstwo_png_bin;
+	Png_res[IMG_PS2_DISC].png_size = pstwo_png_bin_size;
+
+	Png_res[IMG_USB_ICON2].png_in = (void*)usb_png2_bin;
+	Png_res[IMG_USB_ICON2].png_size = usb_png2_bin_size;
+
+	Png_res[IMG_DVD_DISC].png_in = (void*)dvd_png_bin;
+	Png_res[IMG_DVD_DISC].png_size = dvd_png_bin_size;
 
 	// Load PNG from memory
 	for (i = 0; i < 16; i++)
@@ -196,23 +144,26 @@ void Load_PNG_resources()
 		LoadJPG((JpgDatas*)&Png_res[IMG_DEFAULT_BACKGROUND], NULL);
 	}
 
-	// PS1, PS2, PSP icons
-	Png_res[IMG_PS1_DISC].png_in = (void*)psone_png_bin;
-	Png_res[IMG_PS1_DISC].png_size = psone_png_bin_size;
-	LoadPNG(&Png_res[IMG_PS1_DISC], NULL);
-
-	Png_res[IMG_PS2_DISC].png_in = (void*)pstwo_png_bin;
-	Png_res[IMG_PS2_DISC].png_size = pstwo_png_bin_size;
-	LoadPNG(&Png_res[IMG_PS2_DISC], NULL);
-
 	Png_res[IMG_PSP_DISC].png_in = (void*)psp_png_bin;
 	Png_res[IMG_PSP_DISC].png_size = psp_png_bin_size;
 	LoadPNG(&Png_res[IMG_PSP_DISC], NULL);
+
+	Png_res[IMG_RETRO_ICON].png_in = (void*)retro_png_bin;
+	Png_res[IMG_RETRO_ICON].png_size = retro_png_bin_size;
+	LoadPNG(&Png_res[IMG_RETRO_ICON], NULL);
+
+	Png_res[IMG_VIDEO_ICON].png_in = (void*)video_png_bin;
+	Png_res[IMG_VIDEO_ICON].png_size = video_png_bin_size;
+	LoadPNG(&Png_res[IMG_VIDEO_ICON], NULL);
 
 	// Network host icon
 	Png_res[IMG_NETHOST].png_in = (void*)nethost_png_bin;
 	Png_res[IMG_NETHOST].png_size = nethost_png_bin_size;
 	LoadPNG(&Png_res[IMG_NETHOST], NULL);
+
+	Png_res[IMG_MUSIC_ICON].png_in = (void*)music_png_bin;
+	Png_res[IMG_MUSIC_ICON].png_size = music_png_bin_size;
+	LoadPNG(&Png_res[IMG_MUSIC_ICON], NULL);
 }
 
 int LoadTexturePNG(char * filename, int index)
@@ -1077,9 +1028,9 @@ get_pic_from_iso:
 					else
 						ps3ntfs_close(fd);
 				}
-			} // PS3
+			}
 
-			if(bk_picture == BG_PIC1 || gui_mode == MODE_XMB_LIKE)
+			if(bk_picture == BG_PIC1)
 			{
 				if(Png_offset[BIG_PICT] == 0)
 					load_background_picture();
@@ -1121,7 +1072,7 @@ get_pic1:
 		}
 
 default_pict:
-		if(bk_picture == BG_PIC1 || gui_mode == MODE_XMB_LIKE)
+		if(bk_picture == BG_PIC1)
 		{
 			bSkipPIC1 = true;
 

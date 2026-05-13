@@ -75,26 +75,6 @@ bool add_homebrew_icon(t_directories *list, int *max, char *title_id, char *spat
 
 		if(strncmp(spath, "/dev_", 5) == SUCCESS)
 			strcpy(filepath, spath);
-		else if(strncmp(title_id, "BLES80616", 9) == SUCCESS)
-		{
-			sprintf(filepath, "%s/USRDIR/PREPNTFS.SELF", self_path);
-			sprintf(title_name, "Prepare NTFS Drives for WebMAN");
-		}
-		else if(strncmp(title_id, "PRXLOADER", 9) == SUCCESS)
-		{
-			sprintf(filepath, "%s/USRDIR/PRXLOADER.SELF", self_path);
-			sprintf(title_name, "PRX Loader");
-		}
-		else if(strncmp(title_id, "CDGPLAYER", 9) == SUCCESS)
-		{
-			sprintf(filepath, "%s/USRDIR/CDGPLAYER.SELF", self_path);
-			sprintf(title_name, "CDG Player");
-		}
-		else if(strncmp(title_id, "GMPADTEST", 9) == SUCCESS)
-		{
-			sprintf(filepath, "%s/USRDIR/TESTPAD.SELF", self_path);
-			sprintf(title_name, "GamePad Test");
-		}
 		else
 			sprintf(filepath, "/dev_hdd0/game/%s/USRDIR/%s", title_id, spath);
 
@@ -143,17 +123,6 @@ void add_custom_icons(t_directories *list, int *max)
 			{
 				if(!use_mamba) add_homebrew_icon(list, max, title_id, "RELOAD.SELF"); // MultiMAN
 			}
-			else if(strncmp(title_id, "BLES80616", 9) == SUCCESS)
-				add_homebrew_icon(list, max, title_id, "PREPNTFS.SELF");
-			else if(strncmp(title_id, "SSNE10000", 9) == SUCCESS)
-				add_homebrew_icon(list, max, title_id, "cores/snes9x_next_libretro_ps3.self"); // Retroarch
-			else if(strncmp(title_id, "IRISMAN00", 9) == SUCCESS) ;
-			else if(strncmp(title_id, "IMANAGER4", 9) == SUCCESS)
-				add_homebrew_icon(list, max, title_id, "IRIS_MANAGER.SELF"); // Iris Manager
-			else if(strncmp(title_id, "MAME90000", 9) == SUCCESS)
-				add_homebrew_icon(list, max, title_id, "FRONTEND.SELF");
-			else if(strncmp(title_id, "PSID81257", 9) == SUCCESS)
-				add_homebrew_icon(list, max, title_id, "PS1_EMU.SELF");
 			else
 				add_homebrew_icon(list, max, title_id, "RELOAD.SELF"); // Default RELOAD.SELF
 		}

@@ -310,7 +310,6 @@ autolaunch_proc:
 					return r;
 				}
 
-
 				// Mount PS2 Classic ISO (*.ENC.BIN)
 				bool is_ps2_classic =	((directories[currentgamedir].flags & (PS2_CLASSIC_FLAG)) == (PS2_CLASSIC_FLAG)) &&
 										(strlen(ps2classic_path) > 0 && strstr(directories[currentgamedir].path_name, ps2classic_path) != NULL);
@@ -390,8 +389,6 @@ autolaunch_proc:
 						int r = patch_exe_error_09(tmp_path);
 						if(r == 1)
 						{
-							pause_music(1);
-
 							test_game(currentgamedir);
 						}
 						else if(r == -1)

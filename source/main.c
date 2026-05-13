@@ -119,42 +119,26 @@ u32 snd_inited = 0;
 
 #include "background_jpg_bin.h"
 #include "bluray_png_bin.h"
-#include "circle_png_bin.h"
 #include "cricket_raw_bin.h"
-#include "cross_png_bin.h"
 #include "direct_png_bin.h"
-#include "down_png_bin.h"
 #include "dvd_png_bin.h"
-#include "favorite_png_bin.h"
 #include "file_png_bin.h"
+#include "video_png_bin.h"
+#include "music_png_bin.h"
 #include "folder_png_bin.h"
 #include "ftp_png_bin.h"
 #include "img_png_bin.h"
 #include "iso_png_bin.h"
-#include "l1_png_bin.h"
-#include "l2_png_bin.h"
-#include "l3_png_bin.h"
-#include "left_png_bin.h"
 #include "missing_png_bin.h"
-#include "music_png_bin.h"
 #include "nethost_png_bin.h"
-#include "pkg_png_bin.h"
 #include "psone_png_bin.h"
-#include "psp_png_bin.h"
 #include "pstwo_png_bin.h"
-#include "r1_png_bin.h"
-#include "r2_png_bin.h"
-#include "r3_png_bin.h"
-#include "right_png_bin.h"
-#include "select_png_bin.h"
+#include "psp_png_bin.h"
+#include "pkg_png_bin.h"
+#include "retro_png_bin.h"
 #include "self_png_bin.h"
-#include "square_png_bin.h"
-#include "start_png_bin.h"
-#include "triangle_png_bin.h"
-#include "up_png_bin.h"
 #include "usb_png1_bin.h"
 #include "usb_png2_bin.h"
-#include "video_png_bin.h"
 
 #endif
 
@@ -191,33 +175,18 @@ u64 restore_syscall8[2] = {0,0};
 
 #define SYSTEM_LANGUAGE 99
 
-#define GUI_MODES 15
+#define GUI_MODES 1
 
 enum GuiModes {
-	MODE_XMB_LIKE  =  0,
-	MODE_COVERFLOW =  1,
-	MODE_GRID_3x2  =  2,
-	MODE_GRID_4x2  =  3,
-	MODE_GRID_3x3  =  4,
-	MODE_GRID_4x3  =  5,
-	MODE_GRID_5x3  =  6,
-	MODE_GRID_6x3  =  7,
-	MODE_GRID_4x4  =  8,
-	MODE_GRID_5x4  =  9,
-	MODE_GRID_6x4  = 10,
-	MODE_GRID_5x5  = 11,
-	MODE_GRID_6x5  = 12,
-	MODE_GRID_8x5  = 13,
-	MODE_GRID_7x6  = 14,
-	MODE_GRID_8x6  = 15,
+	MODE_COVERFLOW = 1,
 };
 
 static int gui_mode = MODE_COVERFLOW; // GUI selector
 static int cover_mode = 0;
 static int sort_mode = 1;
 
-u16  BUTTON_CROSS_  = BUTTON_CROSS;  // 0x0040
-u16  BUTTON_CIRCLE_ = BUTTON_CIRCLE; // 0x0020
+u16 BUTTON_CROSS_  = BUTTON_CROSS;  // 0x0040
+u16 BUTTON_CIRCLE_ = BUTTON_CIRCLE; // 0x0020
 
 static int net_option = 0;
 static int filter_by_device = LIST_ALL_DEVICES, opt_filter_by_device = LIST_ALL_DEVICES;
@@ -314,12 +283,8 @@ void draw_background_pic1();
 void load_background_picture();
 
 void mount_iso_game();
-void test_audio_file();
 
 bool scan_canceled = false;
-
-// Music
-static int MAX_SONGS = 0;
 
 int song_selected = 0;
 
@@ -428,8 +393,8 @@ char retro_2048_path[ROMS_MAXPATHLEN];
 bool bAddToLastGameApp = true;
 bool bShowPlayOverlay = true;
 bool bShowUSBIcon = true;
-bool bBackgroundGears = true;
-bool bIconPulse = true;
+bool bBackgroundGears = false;
+bool bIconPulse = false;
 bool bFileManager = false;
 bool bUnmountDevBlind = true;
 bool bCachedGameList = true;
@@ -591,7 +556,11 @@ void cls0()
 
 void cls()
 {
-	if(gui_mode == MODE_COVERFLOW || gui_mode == MODE_XMB_LIKE)  {cls0(); return;}
+	if(gui_mode == MODE_COVERFLOW)
+	{
+		cls0();
+		return;
+	}
 
 	if(background_sel == 0) {cls2(); GFX1_background(); return;}
 
@@ -901,7 +870,7 @@ void LoadManagerCfg()
 	background_fx = manager_cfg.background_fx;
 
 	bk_picture = manager_cfg.bk_picture;
-	if(gui_mode > MODE_GRID_6x5 && bk_picture == BG_PIC1) bk_picture = BG_NONE;
+	//if(gui_mode > MODE_GRID_6x5 && bk_picture == BG_PIC1) bk_picture = BG_NONE;
 
 	switch(Video_Resolution.height)
 	{
@@ -1433,15 +1402,6 @@ void Select_games_folder()
 	}
 }
 
-void pause_music(int pause)
-{
-	if((!pause)&&(!(manager_cfg.opt_flags & OPTFLAGS_PLAYMUSIC)))
-		return;
-
-	if(mod_volume < 1) mod_volume = 6;
-	SND_Pause(pause);
-}
-
 int get_net_status()
 {
 #ifdef LOADER_MODE
@@ -1464,142 +1424,6 @@ int get_net_status()
 
 	return r;
 #endif
-}
-
-void init_music(int select_song)
-{
-	test_audio_file(true); // Stop MP3/OGG
-
-	if(MAX_SONGS == 0)
-	{
-		sprintf(tmp_path, "%s/USRDIR/music", self_path);
-		DIR *dir = opendir(tmp_path);
-
-		if(dir)
-		{
-			while(true)
-			{
-				struct dirent *entry = readdir(dir);
-
-				if(!entry) break;
-				if(entry->d_name[0] == '.' && (entry->d_name[1] == 0 || entry->d_name[1] == '.')) continue;
-
-				if(entry->d_name[0] == 'm' && (strstr(entry->d_name, ".mod") || strstr(entry->d_name, ".mp3") || strstr(entry->d_name, ".ogg"))) MAX_SONGS++;
-			}
-			closedir(dir);
-		}
-
-		if(MAX_SONGS == 0) return;
-	}
-
-	if(select_song < 0 && (manager_cfg.opt_flags & OPTFLAGS_PLAYMUSIC))
-	{
-		sprintf(tmp_path, "%s/USRDIR/music/music.mp3", self_path);
-		if(PlayAudio(tmp_path, 0, AUDIO_ONE_TIME)==0) {snd_inited|= INITED_AUDIOPLAYER; return;}
-		sprintf(tmp_path, "%s/USRDIR/music/music.ogg", self_path);
-		if(PlayAudio(tmp_path, 0, AUDIO_ONE_TIME)==0) {snd_inited|= INITED_AUDIOPLAYER; return;}
-
-		srand(time(0)); // randomize seed
-
-		int song_index = rand() % MAX_SONGS;
-
-		do
-		{
-			sprintf(tmp_path, "%s/USRDIR/music/music%i.mp3", self_path, song_index + 1);
-			if(PlayAudio(tmp_path, 0, AUDIO_ONE_TIME)==0) {snd_inited|= INITED_AUDIOPLAYER; song_selected = song_index; return;}
-			sprintf(tmp_path, "%s/USRDIR/music/music%i.ogg", self_path, song_index + 1);
-			if(PlayAudio(tmp_path, 0, AUDIO_ONE_TIME)==0) {snd_inited|= INITED_AUDIOPLAYER; song_selected = song_index; return;}
-			if(song_index > 10) song_index = rand() % MAX_SONGS; else song_index--;
-		}
-		while(song_index > 0);
-	}
-
-	if(select_song >= 0 && select_song < MAX_SONGS)
-	{
-		song_selected = select_song;
-
-		do
-		{
-			sprintf(tmp_path, "%s/USRDIR/music/music%i.mp3", self_path, song_selected + 1);
-			if(PlayAudio(tmp_path, 0, AUDIO_ONE_TIME)==0) {snd_inited|= INITED_AUDIOPLAYER; return;}
-			sprintf(tmp_path, "%s/USRDIR/music/music%i.ogg", self_path, song_selected + 1);
-			if(PlayAudio(tmp_path, 0, AUDIO_ONE_TIME)==0) {snd_inited|= INITED_AUDIOPLAYER; return;}
-			song_selected--;
-		}
-		while(song_selected > 0);
-	}
-
-	MODPlay_Init(&mod_track);
-
-	int file_size;
-	char *file = NULL;
-
-	if(select_song < 0)
-	{
-		sprintf(tmp_path, "%s/music.mod", self_path);
-		file = LoadFile(tmp_path, &file_size);
-
-		if(!file)
-		{
-			sprintf(tmp_path, "%s/MUSIC.MOD", self_path);
-			file = LoadFile(tmp_path, &file_size);
-		}
-	}
-
-	if(select_song >= 0 && select_song < MAX_SONGS)
-	{
-		song_selected = select_song;
-
-		do
-		{
-			sprintf(tmp_path, "%s/USRDIR/music/music%i.mod", self_path, song_selected + 1);
-			file = LoadFile(tmp_path, &file_size);
-			if(!file) song_selected--;
-		}
-		while(!file && song_selected > 0);
-	}
-
-	if(select_song >= 0 && select_song < MAX_SONGS)
-	{
-		song_selected = select_song;
-
-		do
-		{
-			sprintf(tmp_path, "%s/USRDIR/music/music%i.mod", self_path, song_selected + 1);
-			file = LoadFile(tmp_path, &file_size);
-			if(!file) song_selected--;
-		}
-		while(!file && song_selected > 0);
-	}
-
-	if(!file)
-	{
-		srand(time(0)); // Randomize seed
-
-		do
-		{
-			sprintf(tmp_path, "%s/USRDIR/music/music%i.mod", self_path, song_selected + 1);
-			file = LoadFile(tmp_path, &file_size);
-			if(!file) {if(song_selected > 10) song_selected = rand() % MAX_SONGS; else song_selected--;}
-		}
-		while(!file && song_selected > 0);
-	}
-
-
-	if(!file) return;
-
-	// Paranoic code to copy the .mod in aligned and large memory
-	char *file2 = memalign(32, file_size + 32768);
-	if(file2) {memcpy(file2, file, file_size);free(file); file = file2;}
-
-	if(MODPlay_SetMOD (&mod_track, file) < 0) MODPlay_Unload (&mod_track);
-
-	if(mod_volume < 1) mod_volume = 6;
-
-	MODPlay_SetVolume( &mod_track, mod_volume, mod_volume); // Fix the volume to 16 (max 64)
-	MODPlay_Start (&mod_track); // Play the MOD
-	inited |= INITED_MODLIB;
-	SND_Pause(1); // Force pause here
 }
 
 int payload_mode = 0;
@@ -1946,16 +1770,15 @@ void read_settings()
 	char AddToLastGameApp[2] = "1";
 	char ShowPlayOverlay[2] = "1";
 	char ShowUSBIcon[2] = "1";
-	char BackgroundGears[2] = "1";
-	char IconPulse[2] = "1";
+	char BackgroundGears[2] = "0";
+	char IconPulse[2] = "0";
 	char FileManager[2] = "0";
 	char TimeFormat[2] = "4";
-	char UnmountDevBlind[2] = "0";
+	char UnmountDevBlind[2] = "1";
 	char CachedGameList[2] = "1";
 	char ShowPIC1[2] = "0";
 	char ShowVersion[2] = "2";
 	char SpoofVersion[2] = "0";
-	//char HideCoverflowSortModeLabel[2] = "0";
 	char TimeoutByInactivity[2] = "1"; // 1 hour
 	char SkipBDMirrorMsg[2] = "1";
 	char InstallMamba[2] = "1";
@@ -2084,7 +1907,7 @@ void read_settings()
 		getConfigMemValueString((char *) file, file_size, ROMS_SECTION, "VECTX", retro_vectrex_path, ROMS_MAXPATHLEN - 1, retro_vectrex_path);
 		getConfigMemValueString((char *) file, file_size, ROMS_SECTION, "2048", retro_2048_path, ROMS_MAXPATHLEN - 1, retro_2048_path);
 
-		max_roms = getConfigMemValueInt((char *) file, file_size, ROMS_SECTION, "MaxRoms", 0);
+		max_roms = getConfigMemValueInt((char *) file, file_size, ROMS_SECTION, "MaxRoms", 80);
 
 		getConfigMemValueString((char *) file, file_size, GUI_SECTION, "AddToLastGameApp", AddToLastGameApp, 2, AddToLastGameApp);
 		getConfigMemValueString((char *) file, file_size, GUI_SECTION, "ShowPlayOverlay", ShowPlayOverlay, 2, ShowPlayOverlay);
@@ -2098,7 +1921,6 @@ void read_settings()
 		getConfigMemValueString((char *) file, file_size, GUI_SECTION, "OptionsShowPIC1", ShowPIC1, 2, ShowPIC1);
 		getConfigMemValueString((char *) file, file_size, GUI_SECTION, "ShowVersion", ShowVersion, 2, ShowVersion);
 		getConfigMemValueString((char *) file, file_size, GUI_SECTION, "SpoofVersion", SpoofVersion, 2, SpoofVersion);
-		//getConfigMemValueString((char *) file, file_size, GUI_SECTION, "HideCoverflowSortModeLabel", HideCoverflowSortModeLabel, 2, HideCoverflowSortModeLabel);
 		getConfigMemValueString((char *) file, file_size, GUI_SECTION, "TimeoutByInactivity", TimeoutByInactivity, 2, TimeoutByInactivity);
 		getConfigMemValueString((char *) file, file_size, GUI_SECTION, "SkipBDMirrorMsg", SkipBDMirrorMsg, 2, SkipBDMirrorMsg);
 		getConfigMemValueString((char *) file, file_size, GUI_SECTION, "FTPpassword", passwd, 63, passwd);
@@ -2152,7 +1974,6 @@ void read_settings()
 		bFileManager = strncmp(FileManager, "0", 1);
 		bUnmountDevBlind = strncmp(UnmountDevBlind, "0", 1);
 		bCachedGameList = strncmp(CachedGameList, "0", 1);
-		//bHideCoverflowSortModeLabel = strncmp(HideCoverflowSortModeLabel, "0", 1);
 		bLoadMambaAndQuit = strncmp(LoadMambaAndQuit, "0", 1);
 		bSkipBDMirrorMsg = strncmp(SkipBDMirrorMsg, "0", 1);
 
@@ -2583,8 +2404,6 @@ s32 main(s32 argc, const char* argv[])
 	find_device = 0;
 	app_ver[0] = 0;
 
-	init_music(-1);
-
 	if(!unsupported_cfw)
 	{
 		add_sys8_bdvd(NULL, NULL);
@@ -2730,7 +2549,6 @@ s32 main(s32 argc, const char* argv[])
 						}
 					}
 				}
-				// NTFS auto mount
 			}
 
 			// NTFS/EXT
@@ -2904,10 +2722,8 @@ s32 main(s32 argc, const char* argv[])
 
 	if(use_mamba && bLoadMambaAndQuit) exit_program = true;
 
-
-	//////////////////////////////////////////
 	// Main loop
-	/////////////////////////////////////////
+
 	while(!exit_program)
 	{
 		float x = 0.0f, y = 0.0f;
@@ -3595,8 +3411,6 @@ skip_refresh:
 			SaveGameList();
 		}
 
-		pause_music(0);
-
 		if(autolaunch == LAUNCHMODE_TOCHECK)
 		{
 			get_last_selected_game(false);
@@ -3714,53 +3528,65 @@ skip_refresh:
 				if(gui_mode == MODE_COVERFLOW) {if(gui_control() == SUCCESS) draw_coverflow(x, y);}
 				else                           {if(gui_control() == SUCCESS) draw_grid(x, y);}
 				break;
+
 			case SCR_MENU_GAME_OPTIONS:
 				draw_options(x, y, currentgamedir);
 				break;
+
 			case SCR_MENU_GAME_OPTIONS_CONFIG:
 				draw_configs(x, y, currentgamedir);
 				break;
+
 			case SCR_MENU_ISO_OPTIONS:
 				draw_iso_options(x, y, currentgamedir);
 				break;
+
 			case SCR_MENU_GLOBAL_OPTIONS:
 				draw_gbloptions(x, y);
 				break;
+
 			case SCR_MENU_TOOLS:
 				draw_toolsoptions(x, y);
 				break;
+
 			case SCR_TOOL_DELETE_CACHE:
 				draw_cachesel(x, y);
 				break;
+
 			case SCR_MENU_GAME_LIST:
 				draw_gamelist_options(x, y);
 				break;
+
 			case SCR_MENU_CONSOLE_ID_TOOLS:
 				draw_console_id_tools(x, y);
 				break;
+
 			case SCR_MENU_PSX_OPTIONS:
 				draw_psx_options(x, y, currentgamedir);
 				break;
+
 			case SCR_MENU_PSX_VIDEO_OPTIONS:
 				draw_psx_options2(x, y, currentgamedir);
 				break;
+
 			case SCR_TOOL_BUILD_ISO:
 				draw_device_mkiso(x, y, currentgamedir, NULL);
 				break;
+
 			case SCR_TOOL_EXTRACT_ISO:
 				draw_device_xtiso(x, y, currentgamedir);
 				break;
+
 			case SCR_TOOL_COPY_ISO:
 				draw_device_cpyiso(x, y, currentgamedir);
 				break;
+
 			default:
 				menu_screen = SCR_MAIN_GAME_LIST;
 				break;
 		}
 
 		auto_ftp(); // Auto enable FTP
-
-		test_audio_file(false);
 	}
 #endif
 
@@ -3772,7 +3598,7 @@ void load_background_picture()
 {
 	if(bk_picture)
 	{
-		if(bk_picture == BG_RANDOM || bk_picture == BG_PIC1 || gui_mode == MODE_XMB_LIKE)
+		if(bk_picture == BG_RANDOM || bk_picture == BG_PIC1)
 		{
 			int retry = 0, bg;
 			srand(time(0)); // Randomize seed
@@ -4056,23 +3882,16 @@ void set_BdId(int index)
 
 void get_grid_dimensions(bool update_coords)
 {
-	if(gui_mode == MODE_XMB_LIKE)  {cols = 1; rows = 1;} else // XMB-Like
-	if(gui_mode == MODE_COVERFLOW) {cols = 4; rows = 3;} else // Coverflow
-	if(gui_mode == MODE_GRID_3x2)  {cols = 3; rows = 2;} else // Grid 3x2
-	if(gui_mode == MODE_GRID_4x2)  {cols = 4; rows = 2;} else // Grid 4x2
-	if(gui_mode == MODE_GRID_3x3)  {cols = 3; rows = 3;} else // Grid 3x3
-	if(gui_mode == MODE_GRID_4x3)  {cols = 4; rows = 3;} else // Grid 4x3
-	if(gui_mode == MODE_GRID_5x3)  {cols = 5; rows = 3;} else // Grid 5x3
-	if(gui_mode == MODE_GRID_6x3)  {cols = 6; rows = 3;} else // Grid 6x3
-	if(gui_mode == MODE_GRID_4x4)  {cols = 4; rows = 4;} else // Grid 4x4
-	if(gui_mode == MODE_GRID_5x4)  {cols = 5; rows = 4;} else // Grid 5x4
-	if(gui_mode == MODE_GRID_6x4)  {cols = 6; rows = 4;} else // Grid 6x4
-	if(gui_mode == MODE_GRID_5x5)  {cols = 5; rows = 5;} else // Grid 5x5
-	if(gui_mode == MODE_GRID_6x5)  {cols = 6; rows = 5;} else // Grid 6x5
-	if(gui_mode == MODE_GRID_7x6)  {cols = 7; rows = 6;} else // Grid 7x6
-	if(gui_mode == MODE_GRID_8x5)  {cols = 8; rows = 5;} else // Grid 8x5
-	if(gui_mode == MODE_GRID_8x6)  {cols = 8; rows = 6;} else // Grid 8x6
-								   {cols = 4; rows = 3;}      // Grid 4x3
+	if(gui_mode == MODE_COVERFLOW)
+	{
+		cols = 4;
+		rows = 3;
+	}
+	else
+	{
+		cols = 4;
+		rows = 3;
+	}
 
 	num_box = cols * rows;
 
@@ -4106,12 +3925,16 @@ void return_to_game_list(bool update) {}
 void draw_background_pic1() {}
 void enable_draw_background_pic1() {}
 static int anim_mode = 0, anim_step = 0;
+
 #ifdef LOADER_MODE
 int move_origin_to_bdemubackup(char *path) {return FAILED;}
 #endif
+
 static int list_box_devices[16];
 static int max_list_box_devices = 0;
+
 #else
+
 void draw_grid(float x, float y)
 {
 	int i, n, m, ii = 0;
@@ -4149,8 +3972,6 @@ void draw_grid(float x, float y)
 
 		DrawFormatString(x, y, " %i/%i %s%s %s", (selected + currentdir) < ndirectories ? selected + currentdir + 1 : 0, ndirectories, language[DRAWSCREEN_GAMES], &str_home[str_type][0], &str_retro_mode[retro_mode][0]);
 	}
-	else if(gui_mode == MODE_XMB_LIKE)
-		DrawFormatString(x, y, " %i/%i %s%s", currentdir + 1, ndirectories, language[DRAWSCREEN_GAMES], &str_home[str_type][0]);
 	else
 		DrawFormatString(x, y, " %s %i/%i (%i %s)%s", language[DRAWSCREEN_PAGE], currentdir / num_box + 1, ROUND_UPX(ndirectories) / num_box,
 			ndirectories, language[DRAWSCREEN_GAMES], &str_home[str_type][0]);
@@ -4213,51 +4034,6 @@ void draw_grid(float x, float y)
 		x2 = 848 -(x2 - 1200) - x;
 	}
 
-	if(gui_mode == MODE_XMB_LIKE && ((old_pad & (BUTTON_L2 | BUTTON_R2)) == (BUTTON_L2 | BUTTON_R2))) goto skip_overlays;
-
-	// Show Date/Time
-	if (gui_mode == MODE_XMB_LIKE)
-	{
-		u32 hh = 0, mm = 0, ss = 0, day = 0, month = 0, year = 0;
-
-		PS3GetDateTime(&hh, &mm, &ss, &day, &month, &year);
-
-		SetFontColor(0xffffffcc, BLACK);
-		SetFontSize(18, 24);
-
-		SetFontAutoCenter(0);
-
-		float y2 = y + 40;
-		x2 = x + 645;
-
-		if(hh > 12)
-		{
-			hh = hh - 12;
-			if(sys_dateformat == 0 || sys_dateformat == 2)
-				DrawFormatString(x2, y2, " %02u/%02u %02u:%02u PM ", month, day, hh, mm);
-			else
-				DrawFormatString(x2, y2, " %02u/%02u %02u:%02u PM ", day, month, hh, mm);
-		}
-		else
-		{
-			if(hh == 0) hh = 12;
-			if(sys_dateformat == 0 || sys_dateformat == 2)
-				DrawFormatString(x2, y2, " %02u/%02u %02u:%02u AM ", month, day, hh, mm);
-			else
-				DrawFormatString(x2, y2, " %02u/%02u %02u:%02u AM ", day, month, hh, mm);
-		}
-
-		if(Png_offset[selected] == 0)
-		{
-			// Draw quick preview of title name
-			SetFontSize(20, 32);
-			if(!mode_favourites && directories[(currentdir + selected)].title[0] != 0)
-				DrawFormatString(x + 250, y + 214, directories[(currentdir + selected)].title);
-			else if(mode_favourites && favourites.list[selected].title[0] != 0)
-				DrawFormatString(x + 250, y + 214, favourites.list[selected].title);
-		}
-	}
-
 	if(bShowPath)
 	{
 		SetFontColor(0xffffffcc, BLACK);
@@ -4294,16 +4070,7 @@ void draw_grid(float x, float y)
 	int hh = ww * 150 / 200;
 	int xx = x, yy = y;
 
-	if(gui_mode == MODE_XMB_LIKE)
-	{
-		hh = 130;
-
-		ww = (hh * 200 / 150);
-
-		xx += 50;
-		yy += 140;
-	}
-	else if(hh * rows > 450)
+	if(hh * rows > 450)
 	{
 		hh = 450 / rows;
 
@@ -4340,7 +4107,7 @@ void draw_grid(float x, float y)
 			int f = (select_px == m && select_py == n);
 			float f2 = (int) f;
 
-			if(cover_mode || gui_mode == MODE_XMB_LIKE) f2 = 2.1f * ((float) (flash2 *(select_px == m && select_py == n))) / ((float) MAX_FLASH);
+			if(cover_mode) f2 = 2.1f * ((float) (flash2 *(select_px == m && select_py == n))) / ((float) MAX_FLASH);
 
 			DrawBox(xx + ww * m - 4 * f2, yy + n * hh - 4 * f2, 0, (ww-8) + 8 * f2, (hh-8) + 8 * f2, BLACK + (flash2 * f) );
 
@@ -4478,10 +4245,10 @@ void draw_grid(float x, float y)
 							Png_res[ii].height, Png_res[ii].wpitch,
 								TINY3D_TEX_FORMAT_A8R8G8B8, TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
 
-							if(gui_mode == MODE_XMB_LIKE)
+							/*if(gui_mode == MODE_XMB_LIKE)
 								DrawTextBox(x + 250, y + 225, 0, FIX_X(32), FIX_X(24),
 									directories[get_currentdir(i)].splitted ? 0xff9999aa : 0xffffffcf);
-							else
+							else*/
 								DrawTextBox(xx + ww * m + 4 - 4 * f2, yy + n * hh + 4 - 4 * f2, 0, FIX_X(32), FIX_X(24),
 									directories[get_currentdir(i)].splitted ? 0xff9999aa : 0xffffffcf);
 						}
@@ -4660,7 +4427,7 @@ void draw_grid(float x, float y)
 
 		if(update_title_utf8)
 		{
-			width_title_utf8 = Render_String_UTF8(ttf_texture, 768, 32, string_title_utf8, (gui_mode == MODE_XMB_LIKE) ? 18 : 16, 24);
+			width_title_utf8 = Render_String_UTF8(ttf_texture, 768, 32, string_title_utf8, 16, 24);
 			update_title_utf8 = false;
 		}
 
@@ -4668,10 +4435,10 @@ void draw_grid(float x, float y)
 				32, 768 * 2,
 				TINY3D_TEX_FORMAT_A4R4G4B4,  TEXTWRAP_CLAMP, TEXTWRAP_CLAMP,1);
 
-		if(gui_mode == MODE_XMB_LIKE)
+		/*if(gui_mode == MODE_XMB_LIKE)
 			DrawTextBox(x + 250, y + 190 , 0, 780, 32,
 				(frame_count >> 5) & 1 ? str_color : (frame_count >> 6) & 1 ? 0xf4f4f4f4 : 0xe8e8e8e8);
-		else
+		else*/
 			DrawTextBox(x + 3, y + 3 * 150 , 0, 768, 32, str_color);
 
 		SetFontAutoCenter(0);
@@ -4721,7 +4488,7 @@ void draw_grid(float x, float y)
 		}
 	}
 
-skip_overlays:
+//skip_overlays:
 	if(flash && ftp_inited)
 	{
 		tiny3d_SetTextureWrap(0, Png_res_offset[IMG_FTP_ICON], Png_res[IMG_FTP_ICON].width,
@@ -5003,7 +4770,7 @@ void draw_coverflow(float x, float y)
 
 	if(!anim_mode || !g_saved)
 	{
-		// Don´t scroll the covers
+		// Don't scroll the covers
 		n = select_px + select_py * 4;
 
 		if((n - 1) < 0) g_rel_posx[0] = rel_posx[0] - centerx; else g_rel_posx[0] = rel_posx[n - 1] - centerx;
@@ -5476,7 +5243,7 @@ void draw_coverflow(float x, float y)
 				SetCurrentFont(FONT_TTF);
 				SetFontSize(12, 24);
 
-				x2 = DrawString(x + x2,  y + 3 * 150 - 48 + 4, (directories[get_currentdir(i)].flags & (PS1_FLAG)) == (PS1_FLAG) ? "PSX ISO" :
+				x2 = DrawString(x + x2,  y + 3 * 150 - 48 + 4, (directories[get_currentdir(i)].flags & (PS1_FLAG)) == (PS1_FLAG) ? "CD-ROM" :
 					(manager_cfg.global_bd_mirror || (n == 1)) ? "BD EMU"  :
 					(n == 2) ? "LIBFS"   : "");
 			}
@@ -5491,7 +5258,7 @@ void draw_coverflow(float x, float y)
 																				"PSP ISO");
 			}
 			else
-				x2 = DrawString(x + x2,  y + 3 * 150 - 48 + 4, (directories[get_currentdir(i)].flags & (PS2_FLAG)) == (PS2_FLAG) ? "PS2 ISO" : "PS3 ISO");
+				x2 = DrawString(x + x2,  y + 3 * 150 - 48 + 4, (directories[get_currentdir(i)].flags & (PS2_FLAG)) == (PS2_FLAG) ? "DVD-ROM" : "Blu-Ray Disc");
 
 		}
 	}
@@ -5652,31 +5419,12 @@ int gui_control()
 	{
 		if(old_pad & (BUTTON_L2 | BUTTON_R2))
 		{
-			if (old_pad & BUTTON_L2)
+			if(old_pad & BUTTON_L2)
 			{
-				if(gui_mode == MODE_COVERFLOW)
-				{
-					if(manager_cfg.gui_mode == MODE_COVERFLOW)
-						gui_mode = MODE_GRID_6x4;
-					else
-						gui_mode = manager_cfg.gui_mode & 0xF;
-				}
-				else
-					gui_mode = MODE_COVERFLOW;
-
-				if(gui_mode > MODE_GRID_6x5 && bk_picture == BG_PIC1) bk_picture = BG_NONE;
+				gui_mode = MODE_COVERFLOW;
 			}
 			else
 			{
-				gui_mode++;
-				if(gui_mode > GUI_MODES)
-				{
-					gui_mode = MODE_XMB_LIKE;
-					ROT_INC(cover_mode, 3, 0);
-				}
-
-				if(gui_mode > MODE_GRID_6x5 && bk_picture == BG_PIC1) bk_picture = BG_NONE;
-
 				manager_cfg.cover_mode = cover_mode;
 				manager_cfg.gui_mode = ((sort_mode & 0xf)<<4) | (gui_mode & 0xf);
 				SaveManagerCfg();
@@ -5781,9 +5529,9 @@ int gui_control()
 				currentgamedir = get_currentdir(i);
 				int_currentdir = currentdir;
 
-				if(gui_mode > MODE_GRID_6x5) ; // Avoid freeze on Game Options when large grids are used
+				/*if(gui_mode > MODE_GRID_6x5) ; // Avoid freeze on Game Options when large grids are used
 
-				else if((bShowPIC1 == 1) || (bShowPIC1 == 2 && ((directories[indx].flags & (NTFS_FLAG)) != NTFS_FLAG)))
+				else */if((bShowPIC1 == 1) || (bShowPIC1 == 2 && ((directories[indx].flags & (NTFS_FLAG)) != NTFS_FLAG)))
 				{
 					// Program new event thread function to show background picture
 					event_thread_send(0x555ULL, (u64) get_pict, (u64) &i);
@@ -5833,11 +5581,7 @@ ask_delete_item:
 
 								if(DrawDialogYesNo(temp_buffer + 1024) == YES)
 								{
-									pause_music(1);
-
 									delps3iso(directories[indx].path_name);
-
-									pause_music(0);
 
 									return_to_game_list(true);
 								}
@@ -5869,511 +5613,337 @@ ask_delete_item:
 
 	static int auto_up = 0, auto_down = 0, auto_left = 0, auto_right = 0;
 
-/************************************************************************/
-/* GUI 0: GRID															*/
-/************************************************************************/
-	if(gui_mode != MODE_COVERFLOW)
+	/****************************************************************************/
+	/* COVERFLOW															*/
+	/****************************************************************************/
+	AUTO_BUTTON_REP3(auto_left, BUTTON_LEFT)
+	AUTO_BUTTON_REP3(auto_right, BUTTON_RIGHT)
+
+	num_box = 12;
+	cols = 4;
+	rows = 3;
+
+	if(new_pad & BUTTON_UP)
 	{
-		AUTO_BUTTON_REP(auto_up, BUTTON_UP)
-		AUTO_BUTTON_REP(auto_down, BUTTON_DOWN)
-		AUTO_BUTTON_REP(auto_left, BUTTON_LEFT)
-		AUTO_BUTTON_REP(auto_right, BUTTON_RIGHT)
+		while((new_pad | old_pad) & BUTTON_UP) ps3pad_read();
 
-		if(new_pad & BUTTON_UP)
+		auto_up = 1;
+		anim_mode = 0; anim_step = 0;
+
+		if(mode_favourites >= 0x10000) ;
+		else if(mode_favourites)
 		{
-			select_py--;
+			mode_favourites = 0;
+			currentdir = select_px = select_py = 0;
+			get_games();
+		}
+		else
+		{
+			if(!havefavourites)
+				new_pad = BUTTON_R3;
+			else
+			{
+				mode_favourites = (!mode_favourites && havefavourites);
+				currentdir = select_px = select_py = 0;
+				get_games();
+			}
+		}
 
-			auto_up = 1;
+		if(havefavourites)
+		{
+			enable_draw_background_pic1();
+			return r;
+		}
+	}
+	else if(new_pad & BUTTON_DOWN)
+	{
+		auto_down = 1;
+		anim_mode = 0; anim_step = 0;
+
+		if(mode_favourites >= 0x10000) ;
+		else if(mode_favourites)
+		{
+			mode_favourites = 0;
+			currentdir = select_px = select_py = 0;
+			get_games();
+		}
+		else
+		{
+			sort_mode++; if(sort_mode > 2) sort_mode = 0;
+
+			sort_entries2(directories, &ndirectories, sort_mode);
+			UpdateFavourites(directories, ndirectories);
+			load_gamecfg(RESET_GAME_INFO); // Force refresh game info
+			manager_cfg.cover_mode = cover_mode;
+			manager_cfg.gui_mode = ((sort_mode & 0xf)<<4) | (gui_mode & 0xf);
+			SaveManagerCfg();
+
+			currentdir = select_px = select_py = 0;
+			get_games();
+		}
+
+		enable_draw_background_pic1();
+		return r;
+	}
+	else if(new_pad & BUTTON_LEFT)
+	{
+		int tmp_currentdir = currentdir;
+		int update = 0;
+
+		select_px--;
+
+		if(select_px < 0 && select_py == 0 && currentdir == 0 && ndirectories < 4 && !mode_favourites && !havefavourites)
+		{
+			select_px = ndirectories - 1;
+			if(select_px < 0) select_px = 0;
+			currentdir = 0;
+		}
+
+		auto_left = 1;
+
+		if(select_px < 0)
+		{
+			select_px = 3;
+			select_py--;
 
 			if(select_py < 0)
 			{
-				select_py = (rows - 1);
+				select_py = 2;
 
 				if(mode_favourites >= 0x10000) ;
-				else if(mode_favourites) {mode_favourites = 0; get_games();}
-				else if(currentdir >= num_box) {mode_favourites = 0; currentdir -= num_box; get_games();}
-				else {mode_favourites = (!mode_favourites && havefavourites); currentdir = ROUND_UPX(ndirectories) - num_box; get_games();}
+				else if(mode_favourites)
+				{
+					mode_favourites = 0; update = 1;
+					currentdir = ndirectories - 1;
+					if(currentdir < 0) currentdir = 0;
+					if(currentdir >= 3) {select_px = 3; currentdir-= 2;} else select_px = currentdir;
+				}
+				else
+					select_py = 5;
 			}
-
-			enable_draw_background_pic1();
-			return r;
 		}
-		else if(new_pad & BUTTON_DOWN)
+
+		if(!mode_favourites)
 		{
+			if(currentdir > 0 || (currentdir == 0 && select_py != 5))
+			{
+				if(currentdir > 0) {currentdir--; if(!update) update = 2; if(currentdir <= 3 && select_px == 2) select_px = 3;}
+				if(currentdir >= 3) select_px = 3; select_py = 0;
+			}
+			else
+			{
+				mode_favourites = (!mode_favourites && havefavourites);
+
+				if(mode_favourites) {currentdir = (ndirectories/12) * 12; select_px = 3; select_py = 2;}
+				else
+				{
+					currentdir = ndirectories - 1;
+					if(currentdir < 0) currentdir = 0;
+					if(currentdir >= 3)
+					{
+						select_px = 3;
+						currentdir-= 3;
+					}
+					else
+						select_px = currentdir;
+
+					select_py = 0;
+				}
+
+				update = 1;
+			}
+		}
+
+		if(currentdir < 0 || currentdir >= ndirectories)  {currentdir = select_px = select_py = 0; update = 1;}
+
+		if(update)
+		{
+			if(update == 2 && currentdir == (tmp_currentdir - 1))
+			{
+				wait_event_thread(); // Wait previous event thread function
+
+				int_currentdir = currentdir;
+
+				// Program new event thread function
+				event_thread_send(0x555ULL, (u64) get_games_3, 0);
+			}
+			else
+				get_games();
+		}
+
+		anim_mode = 1; anim_step = 0;
+		GFX1_mode = 2; GFX1_counter = 20;
+
+		enable_draw_background_pic1();
+		return r;
+	}
+	else if(new_pad & BUTTON_RIGHT)
+	{
+		int tmp_currentdir = currentdir;
+		int update = 0;
+		select_px++;
+
+		auto_right = 1;
+
+		if(!mode_favourites && (currentdir + select_px) >= ndirectories) {currentdir = ndirectories; select_px = 4; select_py = 2;}
+
+		if(select_px > 3)
+		{
+			select_px = 0;
+
 			select_py++;
 
-			auto_down = 1;
-
-			if(select_py > (rows - 1))
+			if(select_py > 2)
 			{
 				select_py = 0;
 
 				if(mode_favourites >= 0x10000) ;
-				else if(mode_favourites) {mode_favourites = 0; get_games();}
-				else if(currentdir < (ROUND_UPX(ndirectories) - num_box)) {mode_favourites = 0; currentdir += num_box; get_games();}
-				else {mode_favourites = (!mode_favourites && havefavourites); currentdir = 0; get_games();}
-			}
-
-			enable_draw_background_pic1();
-			return r;
-		}
-		else if(new_pad & BUTTON_LEFT)
-		{
-			select_px--;
-
-			if(select_px < 0 && select_py == 0 && currentdir == 0 && ndirectories < 4 && !mode_favourites && !havefavourites)
-			{
-				select_px = ndirectories - 1;
-				if(select_px < 0) select_px = 0;
-				currentdir = 0;
-			}
-
-			auto_left = 1;
-
-			if(select_px < 0)
-			{
-				select_px = (cols - 1);
-
-				if(mode_favourites >= 0x10000) ;
-				else if(mode_favourites) {mode_favourites = 0; get_games();}
-				else if(currentdir >= num_box) {mode_favourites = 0; currentdir -= num_box; get_games();}
-				else {mode_favourites = (!mode_favourites && havefavourites); currentdir = ROUND_UPX(ndirectories) - num_box; get_games();}
-			}
-
-			GFX1_mode = 2; GFX1_counter = 20;
-
-			enable_draw_background_pic1();
-			return r;
-		}
-		else if(new_pad & BUTTON_RIGHT)
-		{
-			select_px++;
-
-			auto_right = 1;
-
-			if(select_px > (cols - 1))
-			{
-				select_px = 0;
-
-				if(mode_favourites >= 0x10000) ;
-				else if(mode_favourites) {mode_favourites = 0; get_games();}
-				else if(currentdir < (ROUND_UPX(ndirectories) - num_box)) {mode_favourites = 0; currentdir += num_box; get_games();}
-				else {mode_favourites = (!mode_favourites && havefavourites); currentdir = 0; get_games();}
-			}
-
-			GFX1_mode = 1; GFX1_counter = 20;
-
-			enable_draw_background_pic1();
-			return r;
-		}
-		else if(new_pad & BUTTON_L1) // Change page
-		{
-			if(gui_mode == MODE_XMB_LIKE)
-			{
-				if(old_pad & BUTTON_SELECT)
+				else if(mode_favourites)
 				{
-					while((new_pad | old_pad) & BUTTON_L1) ps3pad_read();
-
-					old_pad = BUTTON_L2 | new_pad;
-					new_pad = BUTTON_R3;
+					mode_favourites = 0;
+					if(!update) update = 1;
+					currentdir = 0;
 				}
 				else
-				{
-					if(mode_favourites >= 0x10000) ;
-					else if(mode_favourites) {mode_favourites = 0; get_games();}
-					else if(currentdir >= 10) {mode_favourites = 0; currentdir -= 10; get_games();}
-					else {mode_favourites = (!mode_favourites && havefavourites); currentdir = ndirectories - 1; get_games();}
+					select_py = 1;
+			}
+		}
 
-					GFX1_mode = 2; GFX1_counter = 20;
-
-					enable_draw_background_pic1();
-					return r;
-				}
+		if(!mode_favourites)
+		{
+			if(select_px <= 3 && select_py == 0 && currentdir <= 3) ;
+			else if(currentdir < ndirectories)
+			{
+				currentdir++; update = 2;
+				select_px = 3; select_py = 0;
 			}
 			else
 			{
-				if(mode_favourites >= 0x10000) ;
-				else if(mode_favourites) {mode_favourites = 0; get_games();}
-				else if(currentdir >= num_box) {mode_favourites = 0; currentdir -= num_box; get_games();}
-				else {mode_favourites = (!mode_favourites && havefavourites); currentdir = ROUND_UPX(ndirectories) - num_box; get_games();}
-
-				GFX1_mode = 2; GFX1_counter = 20;
-
-				enable_draw_background_pic1();
-				return r;
+				mode_favourites = (!mode_favourites && havefavourites);
+				currentdir = select_px = select_py = 0;
+				update = 1;
 			}
 		}
-		else if(new_pad & BUTTON_R1) // Change page
+
+
+		if(currentdir < 0 || currentdir >= ndirectories)  currentdir = 0;
+
+		if(update)
 		{
-			if(gui_mode == MODE_XMB_LIKE)
+			if(update == 2 && currentdir == (tmp_currentdir + 1))
 			{
-				if(old_pad & BUTTON_SELECT)
-				{
-					while((new_pad | old_pad) & BUTTON_R1) ps3pad_read();
+				wait_event_thread(); // Wait previous event thread function
 
-					new_pad = BUTTON_R3;
-				}
-				else
-				{
-					if(mode_favourites >= 0x10000) ;
-					else if(mode_favourites) {mode_favourites = 0; get_games();}
-					else if(currentdir < (ndirectories - 10)) {mode_favourites = 0; currentdir += 10; get_games();}
-					else {mode_favourites = (!mode_favourites && havefavourites); currentdir = 0; get_games();}
+				int_currentdir = currentdir;
 
-					GFX1_mode = 1; GFX1_counter = 20;
-
-					enable_draw_background_pic1();
-					return r;
-				}
+				// Program new event thread function
+				event_thread_send(0x555ULL, (u64) get_games_3, 1ULL);
 			}
 			else
-			{
-				if(mode_favourites >= 0x10000) ;
-				else if(mode_favourites) {mode_favourites = 0; get_games();}
-				else if(currentdir < (ROUND_UPX(ndirectories) - num_box)) {mode_favourites = 0; currentdir += num_box; get_games();}
-				else {mode_favourites = (!mode_favourites && havefavourites); currentdir = 0; get_games();}
-
-				GFX1_mode = 1; GFX1_counter = 20;
-
-				enable_draw_background_pic1();
-				return r;
-			}
+				get_games();
 		}
+
+		anim_mode = 2; anim_step = 0;
+		GFX1_mode = 1; GFX1_counter = 20;
+
+		enable_draw_background_pic1();
+		return r;
 	}
-	else
+	else if(new_pad & BUTTON_L1) // Change page
 	{
-		/****************************************************************************/
-		/* GUI 1: COVERFLOW															*/
-		/****************************************************************************/
-		AUTO_BUTTON_REP3(auto_left, BUTTON_LEFT)
-		AUTO_BUTTON_REP3(auto_right, BUTTON_RIGHT)
+		anim_mode = 0; anim_step = 0;
 
-		num_box = 12;
-		cols = 4;
-		rows = 3;
-
-		if(new_pad & BUTTON_UP)
+		if(mode_favourites >= 0x10000) ;
+		else if(mode_favourites)
 		{
-			while((new_pad | old_pad) & BUTTON_UP) ps3pad_read();
-
-			auto_up = 1;
-			anim_mode = 0; anim_step = 0;
-
-			if(mode_favourites >= 0x10000) ;
-			else if(mode_favourites)
-			{
-				mode_favourites = 0;
-				currentdir = select_px = select_py = 0;
-				get_games();
-			}
-			else
-			{
-				if(!havefavourites)
-					new_pad = BUTTON_R3;
-				else
-				{
-					mode_favourites = (!mode_favourites && havefavourites);
-					currentdir = select_px = select_py = 0;
-					get_games();
-				}
-			}
-
-			if(havefavourites)
-			{
-				enable_draw_background_pic1();
-				return r;
-			}
+			mode_favourites = 0;
+			select_px = select_py = 0;
+			get_games();
 		}
-		else if(new_pad & BUTTON_DOWN)
+		else if(currentdir >= 12)
 		{
-			auto_down = 1;
-			anim_mode = 0; anim_step = 0;
+			mode_favourites = 0;
 
-			if(mode_favourites >= 0x10000) ;
-			else if(mode_favourites)
-			{
-				mode_favourites = 0;
-				currentdir = select_px = select_py = 0;
-				get_games();
-			}
-			else
-			{
-				sort_mode++; if(sort_mode > 2) sort_mode = 0;
+			currentdir -= 12;
+			if(currentdir < 0) currentdir = 0;
 
-				sort_entries2(directories, &ndirectories, sort_mode);
-				UpdateFavourites(directories, ndirectories);
-				load_gamecfg(RESET_GAME_INFO); // Force refresh game info
-				manager_cfg.cover_mode = cover_mode;
-				manager_cfg.gui_mode = ((sort_mode & 0xf)<<4) | (gui_mode & 0xf);
-				SaveManagerCfg();
-
-				currentdir = select_px = select_py = 0;
-				get_games();
-			}
-
-			enable_draw_background_pic1();
-			return r;
-		}
-		else if(new_pad & BUTTON_LEFT)
-		{
-			int tmp_currentdir = currentdir;
-			int update = 0;
-
-			select_px--;
-
-			if(select_px < 0 && select_py == 0 && currentdir == 0 && ndirectories < 4 && !mode_favourites && !havefavourites)
-			{
-				select_px = ndirectories - 1;
-				if(select_px < 0) select_px = 0;
-				currentdir = 0;
-			}
-
-			auto_left = 1;
-
-			if(select_px < 0)
+			if(currentdir >= 3)
 			{
 				select_px = 3;
-				select_py--;
-
-				if(select_py < 0)
-				{
-					select_py = 2;
-
-					if(mode_favourites >= 0x10000) ;
-					else if(mode_favourites)
-					{
-						mode_favourites = 0; update = 1;
-						currentdir = ndirectories - 1;
-						if(currentdir < 0) currentdir = 0;
-						if(currentdir >= 3) {select_px = 3; currentdir-= 2;} else select_px = currentdir;
-					}
-					else
-						select_py = 5;
-				}
-			}
-
-			if(!mode_favourites)
-			{
-				if(currentdir > 0 || (currentdir == 0 && select_py != 5))
-				{
-					if(currentdir > 0) {currentdir--; if(!update) update = 2; if(currentdir <= 3 && select_px == 2) select_px = 3;}
-					if(currentdir >= 3) select_px = 3; select_py = 0;
-				}
-				else
-				{
-					mode_favourites = (!mode_favourites && havefavourites);
-
-					if(mode_favourites) {currentdir = (ndirectories/12) * 12; select_px = 3; select_py = 2;}
-					else
-					{
-						currentdir = ndirectories - 1;
-						if(currentdir < 0) currentdir = 0;
-						if(currentdir >= 3)
-						{
-							select_px = 3;
-							currentdir-= 3;
-						}
-						else
-							select_px = currentdir;
-
-						select_py = 0;
-					}
-
-					update = 1;
-				}
-			}
-
-			if(currentdir < 0 || currentdir >= ndirectories)  {currentdir = select_px = select_py = 0; update = 1;}
-
-			if(update)
-			{
-				if(update == 2 && currentdir == (tmp_currentdir - 1))
-				{
-					wait_event_thread(); // Wait previous event thread function
-
-					int_currentdir = currentdir;
-
-					// Program new event thread function
-					event_thread_send(0x555ULL, (u64) get_games_3, 0);
-				}
-				else
-					get_games();
-			}
-
-			anim_mode = 1; anim_step = 0;
-			GFX1_mode = 2; GFX1_counter = 20;
-
-			enable_draw_background_pic1();
-			return r;
-		}
-		else if(new_pad & BUTTON_RIGHT)
-		{
-			int tmp_currentdir = currentdir;
-			int update = 0;
-			select_px++;
-
-			auto_right = 1;
-
-			if(!mode_favourites && (currentdir + select_px) >= ndirectories) {currentdir = ndirectories; select_px = 4; select_py = 2;}
-
-			if(select_px > 3)
-			{
-				select_px = 0;
-
-				select_py++;
-
-				if(select_py > 2)
-				{
-					select_py = 0;
-
-					if(mode_favourites >= 0x10000) ;
-					else if(mode_favourites)
-					{
-						mode_favourites = 0;
-						if(!update) update = 1;
-						currentdir = 0;
-					}
-					else
-						select_py = 1;
-				}
-			}
-
-			if(!mode_favourites)
-			{
-				if(select_px <= 3 && select_py == 0 && currentdir <= 3) ;
-				else if(currentdir < ndirectories)
-				{
-					currentdir++; update = 2;
-					select_px = 3; select_py = 0;
-				}
-				else
-				{
-					mode_favourites = (!mode_favourites && havefavourites);
-					currentdir = select_px = select_py = 0;
-					update = 1;
-				}
-			}
-
-
-			if(currentdir < 0 || currentdir >= ndirectories)  currentdir = 0;
-
-			if(update)
-			{
-				if(update == 2 && currentdir == (tmp_currentdir + 1))
-				{
-					wait_event_thread(); // Wait previous event thread function
-
-					int_currentdir = currentdir;
-
-					// Program new event thread function
-					event_thread_send(0x555ULL, (u64) get_games_3, 1ULL);
-				}
-				else
-					get_games();
-			}
-
-			anim_mode = 2; anim_step = 0;
-			GFX1_mode = 1; GFX1_counter = 20;
-
-			enable_draw_background_pic1();
-			return r;
-		}
-		else if(new_pad & BUTTON_L1) // Change page
-		{
-			anim_mode = 0; anim_step = 0;
-
-			if(mode_favourites >= 0x10000) ;
-			else if(mode_favourites)
-			{
-				mode_favourites = 0;
-				select_px = select_py = 0;
-				get_games();
-			}
-			else if(currentdir >= 12)
-			{
-				mode_favourites = 0;
-
-				currentdir -= 12;
-				if(currentdir < 0) currentdir = 0;
-
-				if(currentdir >= 3)
-				{
-					select_px = 3;
-					currentdir-= 3;
-				}
-				else
-					select_px = currentdir;
-
-				select_py = 0;
-				get_games();
+				currentdir-= 3;
 			}
 			else
-			{
-				mode_favourites = (!mode_favourites && havefavourites);
+				select_px = currentdir;
 
-				currentdir = ndirectories - 12;
-				if(currentdir < 0) currentdir = 0;
-
-				if(currentdir >= 3)
-				{
-					select_px = 3;
-					currentdir-= 3;
-				}
-				else
-					select_px = currentdir;
-
-				select_py = 0;
-				get_games();
-			}
-
-			GFX1_mode = 2; GFX1_counter = 20;
-
-			enable_draw_background_pic1();
-			return r;
+			select_py = 0;
+			get_games();
 		}
-		else if(new_pad & BUTTON_R1) // Change page
+		else
 		{
-			// Maybe wait some seconds here...
-			anim_mode = 0; anim_step = 0;
+			mode_favourites = (!mode_favourites && havefavourites);
 
-			if(mode_favourites >= 0x10000) ;
-			else if(mode_favourites)
+			currentdir = ndirectories - 12;
+			if(currentdir < 0) currentdir = 0;
+
+			if(currentdir >= 3)
 			{
-				if(currentdir >= ndirectories)
-				{
-					currentdir = select_px = select_py = 0;
-				}
-
-				mode_favourites = 0;
-				get_games();
-			}
-			else if(currentdir + 12 < ndirectories)
-			{
-				mode_favourites = 0;
-				currentdir += 12;
-				select_px = select_py = 0;
-				if(currentdir >= 3)
-				{
-					select_px = 3;
-					currentdir-= 3;
-				}
-				else
-					select_px = currentdir;
-
-				get_games();
+				select_px = 3;
+				currentdir-= 3;
 			}
 			else
+				select_px = currentdir;
+
+			select_py = 0;
+			get_games();
+		}
+
+		GFX1_mode = 2; GFX1_counter = 20;
+
+		enable_draw_background_pic1();
+		return r;
+	}
+	else if(new_pad & BUTTON_R1) // Change page
+	{
+		// Maybe wait some seconds here...
+		anim_mode = 0; anim_step = 0;
+
+		if(mode_favourites >= 0x10000) ;
+		else if(mode_favourites)
+		{
+			if(currentdir >= ndirectories)
 			{
-				mode_favourites = (!mode_favourites && havefavourites);
-				currentdir = 0;
-				get_games();
+				currentdir = select_px = select_py = 0;
 			}
 
-			GFX1_mode = 1; GFX1_counter = 20;
-
-			enable_draw_background_pic1();
-			return r;
+			mode_favourites = 0;
+			get_games();
 		}
+		else if(currentdir + 12 < ndirectories)
+		{
+			mode_favourites = 0;
+			currentdir += 12;
+			select_px = select_py = 0;
+			if(currentdir >= 3)
+			{
+				select_px = 3;
+				currentdir-= 3;
+			}
+			else
+				select_px = currentdir;
+
+			get_games();
+		}
+		else
+		{
+			mode_favourites = (!mode_favourites && havefavourites);
+			currentdir = 0;
+			get_games();
+		}
+
+		GFX1_mode = 1; GFX1_counter = 20;
+
+		enable_draw_background_pic1();
+		return r;
 	}
 
 	if(new_pad & BUTTON_R3) // Switch games list
@@ -6517,7 +6087,7 @@ void draw_background_pic1()
 {
 	int selected = select_px + select_py * cols;
 
-	if((bLoadPIC1 && (bk_picture == BG_PIC1 || gui_mode == MODE_XMB_LIKE) && frame_count > 55) && Png_offset[selected])
+	if((bLoadPIC1 && (bk_picture == BG_PIC1) && frame_count > 55) && Png_offset[selected])
 	{
 		int i = selected;
 		bLoadPIC1 = false;
@@ -6535,7 +6105,7 @@ void draw_background_pic1()
 			{
 				bool is_retro = (strlen(retro_root_path) > 0 && strstr(directories[indx].path_name, retro_root_path) != NULL);
 
-				if(gui_mode != MODE_XMB_LIKE)
+				if(gui_mode == MODE_COVERFLOW)
 				{
 					if(is_retro) return;
 
@@ -6548,9 +6118,7 @@ void draw_background_pic1()
 			else if((directories[indx].flags & (PS1_FLAG)) == (PS1_FLAG)) return;
 		}
 
-		if(gui_mode > MODE_GRID_6x5 || menu_screen == SCR_MENU_GLOBAL_OPTIONS) ; // Avoid freeze on large grids
-
-		else if((bShowPIC1 == 0 && bk_picture == BG_PIC1) || (bShowPIC1 == 1) || (bShowPIC1 == 2 && ((directories[indx].flags & (NTFS_FLAG)) != NTFS_FLAG)))
+		if((bShowPIC1 == 0 && bk_picture == BG_PIC1) || (bShowPIC1 == 1) || (bShowPIC1 == 2 && ((directories[indx].flags & (NTFS_FLAG)) != NTFS_FLAG)))
 		{
 			// Program new event thread function to show background picture
 			event_thread_send(0x555ULL, (u64) get_pict, (u64) &i);
@@ -6918,8 +6486,6 @@ void draw_device_mkiso(float x, float y, int index, char *path)
 		else
 			strcpy(tmp_path,"/dev_hdd0/PS3ISO");
 
-		pause_music(1);
-
 		ps3ntfs_mkdir(tmp_path, 0777);
 
 		char source_path[MAXPATHLEN];
@@ -6931,8 +6497,6 @@ void draw_device_mkiso(float x, float y, int index, char *path)
 
 		if(makeps3iso(source_path, tmp_path, (list_box_devices[select_option] & 64) != 0 ? 1 : 2) != -1)
 		{
-			pause_music(0);
-
 			return_to_game_list(true);
 		}
 		return;
@@ -7099,13 +6663,9 @@ void draw_device_xtiso(float x, float y, int index)
 				sprintf(tmp_path, "/dev_hdd0/game/%s/" __MKDEF_GAMES_DIR, hdd_folder);
 		}
 
-		pause_music(1);
-
 		ps3ntfs_mkdir(tmp_path, 0777);
 
 		extractps3iso(directories[currentgamedir].path_name, tmp_path, (list_box_devices[select_option] & 64) != 0 ? 1 : 0);
-
-		pause_music(0);
 
 		return_to_game_list(true);
 		return;
@@ -7565,11 +7125,7 @@ void draw_options(float x, float y, int index)
 
 				if(Png_offset[i])
 				{
-					pause_music(1);
-
 					copy_from_selection(currentgamedir);
-
-					pause_music(0);
 
 					currentgamedir = currentdir = 0;
 
@@ -7583,11 +7139,7 @@ void draw_options(float x, float y, int index)
 
 				if(Png_offset[i])
 				{
-					pause_music(1);
-
 					delete_game(currentgamedir);
-
-					pause_music(0);
 
 					currentgamedir = currentdir = 0;
 
@@ -7600,7 +7152,7 @@ void draw_options(float x, float y, int index)
 
 				if(Png_offset[i])
 				{
-					pause_music(1);
+					//pause_music(1);
 
 					DCls();
 					FixDirectory(directories[currentgamedir].path_name, 0);
@@ -7608,8 +7160,6 @@ void draw_options(float x, float y, int index)
 
 					msgDialogAbort();
 					msgDialogClose(0);
-
-					pause_music(0);
 
 					DrawDialogOK(language[DRAWGMOPT_FIXCOMPLETE]);
 				}
@@ -7620,13 +7170,9 @@ void draw_options(float x, float y, int index)
 
 				if(Png_offset[i])
 				{
-					pause_music(1);
-
 					DCls();
 					test_game(currentgamedir);
 					DCls();
-
-					pause_music(0);
 				}
 				break;
 
@@ -8054,7 +7600,7 @@ void draw_iso_options(float x, float y, int index)
 
 				if(Png_offset[i])
 				{
-					pause_music(1);
+					//pause_music(1);
 
 					char game_update_path[0x420];
 					sprintf(game_update_path, "/dev_hdd0/game/%c%c%c%c%s", directories[currentgamedir].title_id[0], directories[currentgamedir].title_id[1],
@@ -8067,7 +7613,7 @@ void draw_iso_options(float x, float y, int index)
 
 					patchps3iso(directories[currentgamedir].path_name, 0);
 
-					pause_music(0);
+					//pause_music(0);
 				}
 				break;
 
@@ -8172,11 +7718,8 @@ void draw_iso_options(float x, float y, int index)
 
 					if(DrawDialogYesNo(temp_buffer) == YES)
 					{
-						pause_music(1);
 
 						delps3iso(directories[currentgamedir].path_name);
-
-						pause_music(0);
 
 						return_to_game_list(true);
 					}
@@ -8597,8 +8140,6 @@ void draw_gbloptions(float x, float y)
 
 	DrawFormatString(x, y, " %s", language[DRAWGLOPT_OPTS]);
 
-	DrawFormatString(710 - x, y, ((manager_cfg.opt_flags & OPTFLAGS_PLAYMUSIC) && (song_selected >= 0)) ? "Song: music%i" : "", song_selected + 1);
-
 	y += 24;
 
 	DrawBox(x, y, 0, box_width, box_height, BLACK);
@@ -8611,21 +8152,7 @@ void draw_gbloptions(float x, float y)
 	DrawButton1_UTF8(box_left, y2, 520, language[DRAWGLOPT_REFRESH], (flash && (select_option == 0)));
 	y2+= 48;
 
-	sprintf(temp_buffer, "%s: %s", language[DRAWGLOPT_CHANGEGUI], (gui_mode == MODE_COVERFLOW) ? "CoverFlow" :
-																  (gui_mode == MODE_GRID_3x2)  ? "Grid 3x2"  :
-																  (gui_mode == MODE_GRID_4x2)  ? "Grid 4x2"  :
-																  (gui_mode == MODE_GRID_3x3)  ? "Grid 3x3"  :
-																  (gui_mode == MODE_GRID_4x3)  ? "Grid 4x3"  :
-																  (gui_mode == MODE_GRID_5x3)  ? "Grid 5x3"  :
-																  (gui_mode == MODE_GRID_6x3)  ? "Grid 6x3"  :
-																  (gui_mode == MODE_GRID_4x4)  ? "Grid 4x4"  :
-																  (gui_mode == MODE_GRID_5x4)  ? "Grid 5x4"  :
-																  (gui_mode == MODE_GRID_6x4)  ? "Grid 6x4"  :
-																  (gui_mode == MODE_GRID_5x5)  ? "Grid 5x5"  :
-																  (gui_mode == MODE_GRID_6x5)  ? "Grid 6x5"  :
-																  (gui_mode == MODE_GRID_7x6)  ? "Grid 7x6"  :
-																  (gui_mode == MODE_GRID_8x5)  ? "Grid 8x5"  :
-																  (gui_mode == MODE_GRID_8x6)  ? "Grid 8x6"  : "XMB-Like");
+	sprintf(temp_buffer, "%s: %s", language[DRAWGLOPT_CHANGEGUI], (gui_mode == MODE_COVERFLOW) ? "CoverFlow" : "CoverFlow");
 
 	if(cover_mode) strcat(temp_buffer, cover_mode == 1 ? " + Cover" : cover_mode == 2 ? " + Box" : " + Box (ISO)");
 
@@ -8655,9 +8182,6 @@ void draw_gbloptions(float x, float y)
 	y2+= 48;
 
 	DrawButton1_UTF8(box_left, y2, 520, language[DRAWGLOPT_CHANGEDIR], (flash && (select_option == 4)));
-	y2+= 48;
-
-	DrawButton1_UTF8(box_left, y2, 520, (manager_cfg.opt_flags & OPTFLAGS_PLAYMUSIC)? language[DRAWGLOPT_SWMUSICOFF] : language[DRAWGLOPT_SWMUSICON] , (flash && (select_option == 5)));
 	y2+= 48;
 
 	bool bSelected = (flash && (select_option == 6));
@@ -8815,7 +8339,7 @@ exit_gbloptions:
 					ROT_INC(cover_mode, 3, 0);
 				}
 
-				if(gui_mode > MODE_GRID_6x5 && bk_picture == BG_PIC1) bk_picture = BG_NONE;
+				//if(gui_mode > MODE_GRID_6x5 && bk_picture == BG_PIC1) bk_picture = BG_NONE;
 
 				refresh_gui = true;
 				break;
@@ -8842,27 +8366,7 @@ exit_gbloptions:
 				return_to_game_list(true);
 				return;
 
-			case 5: // Switch Music On/Off
-				if (new_pad & BUTTON_LEFT)
-				{
-					if(song_selected > 0) song_selected--; else song_selected = MAX_SONGS - 1;
-					init_music(song_selected);
-
-				}
-				else if (new_pad & BUTTON_RIGHT)
-				{
-					if(song_selected < MAX_SONGS - 1) song_selected++; else song_selected = 0;
-					init_music(song_selected);
-				}
-				else
-				{
-					manager_cfg.opt_flags ^= OPTFLAGS_PLAYMUSIC; // Change bit
-					pause_music((manager_cfg.opt_flags & OPTFLAGS_PLAYMUSIC)? 0 : 1);
-					SaveManagerCfg();
-				}
-				break;
-
-			case 6: // Initialize FTP server
+			case 5: // Initialize FTP server
 				switch (net_option)
 				{
 					case 1: // Mount net0/PKG
@@ -8885,7 +8389,7 @@ exit_gbloptions:
 
 							sprintf(temp_buffer, "Mounted /net_host0/VIDEO as /dev_bdvd");
 
-							if(gui_mode == MODE_XMB_LIKE || bk_picture == BG_PIC1) load_background_picture();
+							if(bk_picture == BG_PIC1) load_background_picture();
 
 							DrawDialogTimer(temp_buffer, 1200.0f);
 							game_list_category = GAME_LIST_PS3_ONLY;
@@ -8916,7 +8420,7 @@ exit_gbloptions:
 
 							sprintf(temp_buffer, "Mounted /net_host1/VIDEO as /dev_bdvd");
 
-							if(gui_mode == MODE_XMB_LIKE || bk_picture == BG_PIC1) load_background_picture();
+							if(bk_picture == BG_PIC1) load_background_picture();
 
 							DrawDialogTimer(temp_buffer, 1200.0f);
 							game_list_category = GAME_LIST_PS3_ONLY;
@@ -9047,7 +8551,7 @@ exit_gbloptions:
 				frame_count = 0xFF; // Force display temp
 				break;
 
-			case 7: // Download Covers
+			case 6: // Download Covers
 				return_to_game_list(false);
 
 				if(get_net_status() != SUCCESS) break;
@@ -9164,7 +8668,7 @@ exit_gbloptions:
 				else
 				{
 					ROT_DEC(bk_picture, 0, 99);
-					if(gui_mode > MODE_GRID_6x5 && bk_picture == BG_PIC1) bk_picture--;
+					//if(gui_mode > MODE_GRID_6x5 && bk_picture == BG_PIC1) bk_picture--;
 
 					load_background_picture();
 
@@ -9175,7 +8679,7 @@ exit_gbloptions:
 			else if(new_pad & (BUTTON_RIGHT))
 			{
 				ROT_INC(bk_picture, 99, 0);
-				if(gui_mode > MODE_GRID_6x5 && bk_picture == BG_PIC1) bk_picture++;
+				//if(gui_mode > MODE_GRID_6x5 && bk_picture == BG_PIC1) bk_picture++;
 
 				load_background_picture();
 
@@ -9204,7 +8708,7 @@ exit_gbloptions:
 	// Network Tools
 	else if(select_option == 6)
 	{
-		if((new_pad & BUTTON_SQUARE) && (ftp_inited == false/*(manager_cfg.opt_flags & OPTFLAGS_FTP) == 0*/) && (net_option == 0))
+		if((new_pad & BUTTON_SQUARE) && (ftp_inited == false) && (net_option == 0))
 		{
 				ftp_port = (ftp_port == 21) ? 22 : (ftp_port == 22) ? 2121 : 21;
 				sprintf(ftp_ip_str, "%s : %i", language[DRAWGLOPT_INITFTP], ftp_port);
@@ -9721,7 +9225,7 @@ void draw_gamelist_options(float x, float y)
 				break;
 
 			case 3: // Videos
-				if(gui_mode == MODE_XMB_LIKE || bk_picture == BG_PIC1) load_background_picture();
+				if(bk_picture == BG_PIC1) load_background_picture();
 
 				game_list_category = GAME_LIST_PS3_ONLY;
 				mode_homebrew = VIDEOS_MODE;

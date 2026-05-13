@@ -150,8 +150,6 @@ void copy_PSX_game_from_CD();
 
 void get_games();
 
-void pause_music(int pause);
-
 int LoadTexturePNG(char * filename, int index);
 int LoadTextureJPG(char * filename, int index);
 
@@ -516,9 +514,7 @@ void draw_psx_options(float x, float y, int index)
 
 				if(directories[currentgamedir].flags & BDVD_FLAG)
 				{
-					pause_music(1);
 					copy_PSX_game_from_CD();
-					pause_music(0);
 
 					forcedevices = 1;
 
@@ -530,11 +526,11 @@ void draw_psx_options(float x, float y, int index)
 
 					if(Png_offset[i])
 					{
-						pause_music(1);
+						//pause_music(1);
 
 						copy_from_selection(currentgamedir);
 
-						pause_music(0);
+						//pause_music(0);
 
 						return_to_game_list(true);
 					}
@@ -551,11 +547,7 @@ void draw_psx_options(float x, float y, int index)
 
 				if(Png_offset[i])
 				{
-					pause_music(1);
-
 					delete_game(currentgamedir);
-
-					pause_music(0);
 
 					return_to_game_list(true);;
 				}
@@ -566,14 +558,10 @@ void draw_psx_options(float x, float y, int index)
 
 				if(Png_offset[i])
 				{
-					pause_music(1);
-
 					FixDirectory(directories[currentgamedir].path_name, 0);
 
 					msgDialogAbort();
 					msgDialogClose(0);
-
-					pause_music(0);
 
 					DrawDialogOKTimer(language[DRAWGMOPT_FIXCOMPLETE], 1500.0f);
 				}

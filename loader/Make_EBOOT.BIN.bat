@@ -11,6 +11,5 @@ set PS3DEV=%PS3SDK%/ps3dev
 
 echo.
 make npdrm
-echo.
 
 pause

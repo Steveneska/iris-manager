@@ -4,24 +4,26 @@
 .SUFFIXES:
 #---------------------------------------------------------------------------------
 ifeq ($(strip $(PSL1GHT)),)
-$(error "Please set PSL1GHT in your environment by adding export PSL1GHT=<path>")
+$(error "Please set PSL1GHT in your environment. export PSL1GHT=<path>")
 endif
 
 #---------------------------------------------------------------------------------
-# TITLE, APPID, CONTENTID, ICON0, SFOXML before ppu_rules.
+#  TITLE, APPID, CONTENTID, ICON0 SFOXML before ppu_rules.
 #---------------------------------------------------------------------------------
-TITLE			:= File Manager
-APPID			:= PS3SFM001
-CONTENTID		:= UP0001-$(APPID)_00-0000000000000000
-ICON0			:= $(CURDIR)/ICON0.PNG
-SFOXML			:= $(CURDIR)/SFO.XML
+TITLE		        := Simple File Manager
+APPID		        := PS3SFM001
+CONTENTID	      := UP0001-$(APPID)_00-0000000000000000
+ICON0           := $(CURDIR)/ICON0.PNG
+#ICON1          := $(CURDIR)/ICON1.PAM
+#PIC1           := $(CURDIR)/PIC1.PNG
+SFOXML          := $(CURDIR)/sfo.xml
 
 SCETOOL_FLAGS	?=	--self-app-version=0001000000000000  --sce-type=SELF --compress-data=TRUE --self-add-shdrs=TRUE --skip-sections=FALSE --key-revision=1 \
 					--self-auth-id=1010000001000003 --self-vendor-id=01000002 --self-fw-version=0003004000000000
 
 include $(PSL1GHT)/ppu_rules
 
-# Additional SCETool flags
+# aditional scetool flags (--self-ctrl-flags, --self-cap-flags...)
 SCETOOL_FLAGS	+=	--self-ctrl-flags 4000000000000000000000000000000000000000000000000000000000000002
 SCETOOL_FLAGS	+=	--self-cap-flags 00000000000000000000000000000000000000000000007B0000000100000000
 
@@ -39,28 +41,29 @@ SHADERS		:=	shaders
 INCLUDES	:=	include ../include lib/include
 
 #---------------------------------------------------------------------------------
-# Any extra libraries we wish to link with the project
+# any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
 LIBS		:=	../lib/libfatfs.a ../lib/libntfs_ext.a -lsysfs -lfont -lfreetype \
 				-lz -ltiny3d -lsimdmath -lgcm_sys -lnet -lio -lsysutil -lrt -llv2 \
 				-lsysmodule -lm
 
 #---------------------------------------------------------------------------------
-# Options for code generation
+# options for code generation
 #---------------------------------------------------------------------------------
+
 CFLAGS		=	-O2 -Wall -mcpu=cell $(MACHDEP) $(INCLUDE) -DPS3_GEKKO $(DFLAGS) -DLIBBUILD
 CXXFLAGS	=	$(CFLAGS)
 
 LDFLAGS		=	$(MACHDEP) -Wl,-Map,$(notdir $@).map
 
 #---------------------------------------------------------------------------------
-# List of directories containing libraries. This must be the top level containing
+# list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
 LIBDIRS	:=
 
 #---------------------------------------------------------------------------------
-# No real need to edit anything past this point unless you need to add additional
+# no real need to edit anything past this point unless you need to add additional
 # rules for different file extensions
 #---------------------------------------------------------------------------------
 ifneq ($(BUILD),$(notdir $(CURDIR)))
@@ -77,13 +80,13 @@ export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 export BUILDDIR	:=	$(CURDIR)/$(BUILD)
 
 #---------------------------------------------------------------------------------
-# Automatically build a list of object files for our project
+# automatically build a list of object files for our project
 #---------------------------------------------------------------------------------
 CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 sFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.S)))
-BINFILES	:=  $(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.bin)))
+BINFILES	:= $(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.bin)))
 VCGFILES	:=	$(foreach dir,$(SHADERS),$(notdir $(wildcard $(dir)/*.vcg)))
 FCGFILES	:=	$(foreach dir,$(SHADERS),$(notdir $(wildcard $(dir)/*.fcg)))
 
@@ -91,7 +94,7 @@ VPOFILES	:=	$(VCGFILES:.vcg=.vpo)
 FPOFILES	:=	$(FCGFILES:.fcg=.fpo)
 
 #---------------------------------------------------------------------------------
-# Use CXX for linking C++ projects, CC for standard C
+# use CXX for linking C++ projects, CC for standard C
 #---------------------------------------------------------------------------------
 ifeq ($(strip $(CPPFILES)),)
 	export LD	:=	$(CC)
@@ -106,7 +109,7 @@ export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
 					$(sFILES:.s=.o) $(SFILES:.S=.o)
 
 #---------------------------------------------------------------------------------
-# Build a list of include paths
+# build a list of include paths
 #---------------------------------------------------------------------------------
 export INCLUDE	:=	$(foreach dir,$(INCLUDES), -I$(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
@@ -115,13 +118,14 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES), -I$(CURDIR)/$(dir)) \
 					-I$(PS3DEV)/portlibs/ppu/include/freetype2
 
 #---------------------------------------------------------------------------------
-# Build a list of library paths
+# build a list of library paths
 #---------------------------------------------------------------------------------
 export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
 					$(LIBPSL1GHT_LIB) -L$(PORTLIBS)/lib
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
 .PHONY: $(BUILD) clean
+
 
 #---------------------------------------------------------------------------------
 $(BUILD):
@@ -130,26 +134,29 @@ $(BUILD):
 
 #---------------------------------------------------------------------------------
 clean:
-	@echo Cleaning artifacts...
-	@rm -fr $(BUILD) $(OUTPUT).ELF $(OUTPUT).SELF  EBOOT.BIN
+	@echo clean ...
+	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).self  EBOOT.BIN
 
 #---------------------------------------------------------------------------------
 run:
-	ps3load $(OUTPUT).SELF
+	ps3load $(OUTPUT).self
 
 #---------------------------------------------------------------------------------
-pkg: $(BUILD) $(OUTPUT).PKG
+pkg:	$(BUILD) $(OUTPUT).pkg
 
 #---------------------------------------------------------------------------------
+
 npdrm: $(BUILD)
+#	@$(SELF_NPDRM) $(SCETOOL_FLAGS) --np-content-id=$(CONTENTID) --encrypt $(BUILDDIR)/$(basename $(notdir $(OUTPUT))).elf $(BUILDDIR)/../EBOOT.BIN
 
 #---------------------------------------------------------------------------------
+
 else
 
 DEPENDS	:=	$(OFILES:.o=.d)
 
 #---------------------------------------------------------------------------------
-# Main targets
+# main targets
 #---------------------------------------------------------------------------------
 $(OUTPUT).a: $(OFILES)
 $(OFILES): $(BINFILES) $(VCGFILES) $(VSAFILES)

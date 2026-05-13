@@ -13,7 +13,7 @@ GAMEFOLDER_WANTUSE      = Do you want to set
 GAMEFOLDER_TOINSTALLNTR = as your game installation directory?
 GAMEFOLDER_USING        = is now set
 GAMEFOLDER_TOINSTALL    = as your default game folder
-    
+
 # DRAW SCREEN1
 DRAWSCREEN_FAVSWAP      = Favourites Swap
 DRAWSCREEN_FAVINSERT    = Favourites Insert
@@ -79,7 +79,7 @@ DRAWGMCFG_SAVECFG       = Save Config
 DRAWGMCFG_DIRECTBOOT    = Direct Boot
 
 # DRAW GLOBAL OPTIONS
-DRAWGLOPT_OPTS          = Global Options
+DRAWGLOPT_OPTS          = Options
 DRAWGLOPT_SCRADJUST     = Video Adjust
 DRAWGLOPT_CHANGEGUI     = Change Current GUI
 DRAWGLOPT_CHANGEBCK     = Change Background Color
@@ -88,11 +88,9 @@ DRAWGLOPT_BCKPICRAND    = Background Picture: Random
 DRAWGLOPT_BCKPIC1       = Background Picture: PIC1.PNG
 DRAWGLOPT_BCKPICT       = Background Picture:
 DRAWGLOPT_CHANGEDIR     = Change Game Directory
-DRAWGLOPT_SWMUSICOFF    = Switch Music Off
-DRAWGLOPT_SWMUSICON     = Switch Music On
 DRAWGLOPT_INITFTP       = Initialize FTP server
-DRAWGLOPT_TOOLS         = Tools
-DRAWGLOPT_REFRESH       = Game List
+DRAWGLOPT_TOOLS         = Utilities
+DRAWGLOPT_REFRESH       = Game List Filter
 DRAWGLOPT_CREDITS       = Credits
 DRAWGLOPT_FTPINITED     = Server FTP initialized@Do you want auto-enable FTP service on init?
 DRAWGLOPT_FTPARINITED   = Server FTP already initialized
@@ -101,8 +99,6 @@ DRAWGLOPT_FTPSTOPED     = Server FTP Stopped@Removed FTP service on init.
 # DRAW TOOLS
 DRAWTOOLS_TOOLS         = Tools
 DRAWTOOLS_DELCACHE      = Delete Cache Tool
-# DRAWTOOLS_SECDISABLE    = Press To Disable Syscall Security
-# DRAWTOOLS_SECENABLE     = Press To Enable Syscall Security
 DRAWTOOLS_PKGTOOLS      = .PKG Install
 DRAWTOOLS_COPYFROM      = Copy from /dev_usb/iris to IRISMAN folder
 DRAWTOOLS_WITHBDVD      = With BDVD Controller
@@ -229,12 +225,12 @@ DRAWPSX_COPYMC          = Copying Memory Card to HDD0 device...
 DRAWPSX_ERRCOPYMC       = Error copying the Memory Card to HDD0 device
 DRAWPSX_PUTFNAME        = Put a Folder Name:
 DRAWPSX_FMUSTB          = Folder Name must be >=3 chars
-DRAWPSX_PUTADISC        = Put a PSX disc and press YES to continue or NO to abort@@Disc to copy: 
+DRAWPSX_PUTADISC        = Put a PSX disc and press YES to continue or NO to abort@@Disc to copy:
 DRAWPSX_UNREC           = Unrecognized disc
 DRAWPSX_ERROPENING      = Error opening BDVD drive
 DRAWPSX_ASKEFOLDER      = Folder Exits@@Continue?
 DRAWPSX_ISOEXITS        = exists@@Skip?
-       
+
 # generic
 OUT_OFMEMORY            = Out of Memory
 OPERATION_DONE          = Done!
@@ -249,7 +245,7 @@ GAMELIST_NETGAMES       = Network Games (via webMAN)
 GAMELIST_STATUS1        = []  All Retro games       <  >  Select Retro mode       X  Select List
 GAMELIST_STATUS2        = X  Select Game List mode             O  Go Back
 GAMELIST_SCANNING0      = Scanning all games...
-GAMELIST_SCANNING1      = Scanning PS3 games...
+GAMELIST_SCANNING1      = Scanning PlayStation 3 games...
 GAMELIST_SCANNING2      = Scanning PlayStation games...
 GAMELIST_SCANNING3      = Scanning Videos...
 GAMELIST_SCANNING4      = Scanning Retro games...

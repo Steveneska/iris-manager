@@ -561,8 +561,6 @@ skip:
 	return ret;
 }
 
-void pause_music(int pause);
-
 static int copy_file_manager(char *path1, char *path2, sysFSDirent *ent, int nent, int sel, u64 free)
 {
 	int ret = 0;
@@ -571,7 +569,6 @@ static int copy_file_manager(char *path1, char *path2, sysFSDirent *ent, int nen
 	u64 size = 0;
 
 	use_async_fd = ASYNC_ENABLE;
-	pause_music(1);
 
 	reset_copy = 1;
 	cpy_str = "Copy";
@@ -723,8 +720,6 @@ end:
 	use_async_fd = 0;
 	pad_last_time = 0;
 
-	pause_music(0);
-
 	if(ret < 0) ;
 	else if((copy_mode == 0) && (size > free))
 	{
@@ -746,7 +741,6 @@ int copy_archive_file(char *path1, char *path2, char *file, u64 free)
 	int msg_en = 0;
 
 	use_async_fd = ASYNC_ENABLE;
-	pause_music(1);
 
 	reset_copy = 1;
 	cpy_str = "Copy";
@@ -850,7 +844,7 @@ end:
 	use_async_fd = 0;
 	pad_last_time = 0;
 
-	pause_music(0);
+	//pause_music(0);
 
 	if(ret < 0)
 	{
@@ -877,7 +871,7 @@ static int move_file_manager(char *path1, char *path2, sysFSDirent *ent, int nen
 
 	use_async_fd = ASYNC_ENABLE;
 
-	pause_music(1);
+	//pause_music(1);
 
 	n = 1; while(path1[n] != '/' && path1[n] != 0) n++;
 
@@ -1047,8 +1041,6 @@ end:
 
 	use_async_fd = 0;
 	pad_last_time = 0;
-
-	pause_music(0);
 
 	if(ret < 0) return ret;
 

@@ -164,9 +164,6 @@ int sel2 = 0;
 
 #define MAX_PATH_LEN 0x420
 
-static int audio_pane = 0;
-static char audio_file[MAX_PATH_LEN];
-
 static char path1[MAX_PATH_LEN];
 static char path2[MAX_PATH_LEN];
 
@@ -377,42 +374,6 @@ static msgType mdialogprogress =  MSG_DIALOG_SINGLE_PROGRESSBAR | MSG_DIALOG_MUT
 static msgType mdialogprogress2 = MSG_DIALOG_DOUBLE_PROGRESSBAR | MSG_DIALOG_MUTE_ON;
 
 static volatile int progress_action = 0;
-
-void init_music(int select_song);
-
-void test_audio_file(bool stop_audio)
-{
-	sysUtilCheckCallback();
-	if((snd_inited & INITED_AUDIOPLAYER) && (StatusAudio()==AUDIO_STATUS_EOF || StatusAudio()==AUDIO_STATUS_ERR || stop_audio))
-	{
-		StopAudio(); snd_inited &= ~INITED_AUDIOPLAYER; audio_file[0] = 0;
-
-		bool exit_loop = false; if(stop_audio) return;
-
-		if(audio_pane == 0) {init_music(-1); return;}
-
-		if(audio_pane == 1 && selcount1<1)
-		{
-			while(sel1<nentries1)
-			{
-				sel1++; if(sel1>=nentries1) {sel1=0; if(exit_loop) return; else exit_loop=true;}
-				sprintf(audio_file, "%s/%s", path1, entries1[sel1].d_name);
-				if(strcasestr(entries1[sel1].d_name, ".mp3") || strcasestr(entries1[sel1].d_name, ".ogg")) break;
-			}
-		}
-		if(audio_pane == 2 && selcount2<1)
-		{
-			while(sel2<nentries2)
-			{
-				sel2++; if(sel2>=nentries2) {sel2=0; if(exit_loop) return; else exit_loop=true;}
-				sprintf(audio_file, "%s/%s", path2, entries2[sel2].d_name);
-				if(strcasestr(entries2[sel2].d_name, ".mp3") || strcasestr(entries2[sel2].d_name, ".ogg")) break;
-			}
-		}
-
-		if(PlayAudio(audio_file, 0, AUDIO_ONE_TIME)==0) snd_inited|= INITED_AUDIOPLAYER;
-	}
-}
 
 static void progress_callback(msgButton button, void *userdata)
 {
@@ -1026,23 +987,7 @@ int exec_item(char *path, char *path2, char *filename, u32 d_type, s64 entry_siz
 {
 	char *ext = get_extension(filename);
 
-	if(!(d_type & IS_MARKED) && (strcasestr(".mp3|.ogg", ext) != NULL))
-	{
-		sprintf(TEMP_PATH, "%s/%s", path, filename);
-
-		if((snd_inited & INITED_AUDIOPLAYER) && strcmp(audio_file, TEMP_PATH) == 0)
-		{
-			StopAudio(); snd_inited &= ~INITED_AUDIOPLAYER;
-		}
-		else
-		{
-			audio_pane = fm_pane + 1;
-
-			sprintf(audio_file, "%s", TEMP_PATH);
-			if(PlayAudio(audio_file, 0, AUDIO_ONE_TIME) == 0) snd_inited|= INITED_AUDIOPLAYER;
-		}
-	}
-	else if((use_mamba || use_cobra) && !(d_type & IS_MARKED) && (strcasestr(".iso|.bin|.img|.mdf|.iso.0", ext) != NULL))
+	if((use_mamba || use_cobra) && !(d_type & IS_MARKED) && (strcasestr(".iso|.bin|.img|.mdf|.iso.0", ext) != NULL))
 	{
 		sprintf(TEMP_PATH, "%s/%s", path, filename);
 		launch_iso_game(TEMP_PATH, DETECT_EMU_TYPE); // mount_game.h
@@ -1065,14 +1010,12 @@ int exec_item(char *path, char *path2, char *filename, u32 d_type, s64 entry_siz
 	{
 		extract_file(path, path2, filename);
 	}
-
 	else if(!(d_type & IS_MARKED) && is_retro_file(path, filename))
 	{
 		char rom_path[MAXPATHLEN];
 		sprintf(rom_path, "%s/%s", path, filename);
 		launch_retro(rom_path);
 	}
-
 	else if(!(d_type & IS_MARKED) && strcasecmp(ext, ".p3t") == SUCCESS)
 	{
 		sprintf(MEM_MESSAGE, "Do you want to copy %s\nto dev_hdd0/theme folder?", filename);
@@ -1087,7 +1030,6 @@ int exec_item(char *path, char *path2, char *filename, u32 d_type, s64 entry_siz
 			DrawDialogOKTimer(MEM_MESSAGE, 2000.0f);
 		}
 	}
-
 	else if(!(d_type & IS_MARKED) && strcasecmp(ext, ".jpg") == SUCCESS)
 	{
 		sprintf(TEMP_PATH, "%s/%s", path, filename);
@@ -1096,7 +1038,6 @@ int exec_item(char *path, char *path2, char *filename, u32 d_type, s64 entry_siz
 		{
 			png_signal = 300; FullScreen = 1;
 		}
-
 	}
 	else if(!(d_type & IS_MARKED) && (strcasecmp(ext, ".png") == SUCCESS || !strcmp(filename, "PS3LOGO.DAT")))
 	{
@@ -2205,11 +2146,6 @@ int file_manager(char *pathw1, char *pathw2)
 		{
 			if(new_pad & BUTTON_START)
 				break;
-			/*else if(new_pad & BUTTON_CIRCLE_)
-			{
-				if(DrawDialogYesNo("Close File Manager and exit?") == YES) {SaveGameList(); fun_exit(); exit(0);}
-				new_pad = 0;
-			}*/
 		}
 
 		if((new_pad & BUTTON_TRIANGLE) && (old_pad & BUTTON_SELECT)) set_menu2 = 0;
@@ -2463,7 +2399,7 @@ int file_manager(char *pathw1, char *pathw2)
 					{
 						if(!strncmp((char *) entries1[sel1].d_name, "ntfs", 4) || !strncmp((char *) entries1[sel1].d_name, "ext", 3))
 						{
-							sprintf(MEM_MESSAGE, "Do you want to eject the storage device plugged into USB00%i?", NTFS_Test_Device(entries1[sel1].d_name));
+							sprintf(MEM_MESSAGE, "Do you want to eject the storage device plugged in USB port 0%i?", NTFS_Test_Device(entries1[sel1].d_name));
 
 							if(DrawDialogYesNo(MEM_MESSAGE) == YES)
 							{
@@ -2616,7 +2552,7 @@ int file_manager(char *pathw1, char *pathw2)
 					{
 						if(!strncmp((char *) entries2[sel2].d_name, "ntfs", 4) || !strncmp((char *) entries2[sel2].d_name, "ext", 3))
 						{
-							sprintf(MEM_MESSAGE, "Do you want to eject the storage device plugged into USB00%i?", NTFS_Test_Device(entries2[sel2].d_name));
+							sprintf(MEM_MESSAGE, "Do you want to eject the storage device plugged in USB port 0%i?", NTFS_Test_Device(entries2[sel2].d_name));
 
 							if(DrawDialogYesNo(MEM_MESSAGE) == YES)
 							{
@@ -2665,7 +2601,6 @@ int file_manager(char *pathw1, char *pathw2)
 		}
 
 		sysUtilCheckCallback();
-		test_audio_file(false);
 	}
 
 	if(copy_mem) free(copy_mem); copy_mem = NULL;

@@ -13,7 +13,6 @@ echo.
 make npdrm
 echo.
 if exist libsfm_ps3.a copy /Y libsfm_ps3.a ..\lib\libsfm_ps3.a
-echo.
 
 :quit
 pause
